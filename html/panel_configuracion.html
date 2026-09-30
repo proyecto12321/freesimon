@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración | Simon Craft</title>
+    <link rel="stylesheet" href="../css/panel_configuracion.css">
+</head>
+<body>
+    <main class="config-container">
+        <div class="config-panel">
+            <div class="config-header">
+              <button id="btnVolver" class="btn-volver">  
+                </button>
+                <h1>CONFIGURACIÓN</h1>
+            </div>
+            <section class="config-section">
+                <h2>SONIDO</h2>
+                <div class="config-option">
+                    <label for="volumenGeneral">
+                        Volumen general
+                    </label>
+                    <input type="range" id="volumenGeneral" min="0" max="100" value="80">
+                    <span id="valorVolumenGeneral">
+                        80%
+                    </span>
+                </div>
+                <div class="config-option">
+                    <label for="volumenMusica">
+                        Música
+                    </label>
+                    <input type="range" id="volumenMusica" min="0" max="100" value="60">
+                    <span id="valorVolumenMusica">
+                        60%
+                    </span>
+                </div>
+                <div class="config-option">
+                    <label for="volumenEfectos">
+                        Efectos
+                    </label>
+                    <input type="range" id="volumenEfectos" min="0" max="100" value="80">
+                    <span id="valorVolumenEfectos">
+                        80%
+                    </span>
+                </div>
+            </section>
+            <section class="config-section">
+
+                <h2>VIDEO</h2>
+
+                <div class="config-option">
+
+                    <label for="calidad">
+                        Calidad gráfica
+                    </label>
+
+                    <select id="calidad">
+
+                        <option value="bajo">
+                            Bajo
+                        </option>
+
+                        <option value="medio">
+                            Medio
+                        </option>
+
+                        <option value="alto" selected>
+                            Alto
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="config-option">
+
+                    <label for="fps">
+                        Límite de FPS
+                    </label>
+
+                    <select id="fps">
+
+                        <option value="30">30 FPS</option>
+                        <option value="60" selected>60 FPS</option>
+                        <option value="120">120 FPS</option>
+                        <option value="144">144 FPS</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="config-option">
+
+                    <label for="pantallaCompleta">
+                        Pantalla completa
+                    </label>
+
+                    <input type="checkbox" id="pantallaCompleta">
+
+                </div>
+
+            </section>
+            <section class="config-section">
+
+                <h2>JUEGO</h2>
+
+                <div class="config-option">
+
+                    <label for="sensibilidad">
+                        Sensibilidad
+                    </label>
+
+                    <input type="range" id="sensibilidad" min="1" max="100" value="50">
+
+                    <span id="valorSensibilidad">
+                        50
+                    </span>
+
+                </div>
+
+
+                <div class="config-option">
+
+                    <label for="mostrarFps">
+                        Mostrar FPS
+                    </label>
+
+                    <input type="checkbox" id="mostrarFps">
+
+                </div>
+
+            </section>
+
+
+            <div class="config-actions">
+
+                <button id="btnGuardar">
+                    GUARDAR CAMBIOS
+                </button>
+
+                <button id="btnRestablecer">
+                    RESTABLECER
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+    <script src="../js/panel_configuracion.js"></script>
+
+</body>
+
+</html>

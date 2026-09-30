@@ -7,7 +7,7 @@ const mensaje = document.getElementById("mensaje");
 
 // Botón ingresar
 btnIngresar.addEventListener("click", () => {
-
+    window.location.href = "panel_configuracion.html";
     if (codigo.value === CODIGO_ACCESO) {
 
         mensaje.textContent = "Código correcto.";
