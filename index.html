@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeSIMON</title>
+
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+    <main class="contenedor">
+
+        <section class="tarjeta">
+
+            <h1>FreeSIMON</h1>
+            <p class="subtitulo">Ingresa tus datos para comenzar</p>
+
+            <div class="formulario">
+
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" placeholder="Ingresa tu nombre" autocomplete="off">
+
+                <label for="grado">Grado</label>
+                <select id="grado">
+                    <option value="">Selecciona tu grado</option>
+                    <option value="1">1.º</option>
+                    <option value="2">2.º</option>
+                    <option value="3">3.º</option>
+                    <option value="4">4.º</option>
+                    <option value="5">5.º</option>
+                </select>
+
+                <label for="seccion">Sección</label>
+                <select id="seccion">
+                    <option value="">Selecciona tu sección</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                </select>
+
+                <button id="btnJugar" class="btn btn-jugar">
+                    Jugar
+                </button>
+
+                <button id="btnPanelDocente" class="btn btn-docente">
+                    Panel docente
+                </button>
+
+                <button id="btnSalir" class="btn btn-salir">
+                    Salir
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="js/principal.js"></script>
+
+</body>
+
+</html>
