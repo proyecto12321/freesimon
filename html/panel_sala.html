@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sala - FreeSIMON</title>
+    <title>Sala de juego - FreeSIMON</title>
 
     <link rel="stylesheet" href="../css/panel_sala.css">
 
@@ -15,17 +15,124 @@
 
 <body>
 
-    <main class="contenedor">
+    <main class="sala">
 
-        <section class="tarjeta">
+        <!-- =========================================
+             FRANJA SUPERIOR
+        ========================================== -->
 
-            <h1>Panel de sala</h1>
+        <header class="franja-superior">
 
-            <p id="datosJugador"></p>
+            <div class="datos-jugador">
+
+                <h1>Sala de juego</h1>
+
+                <div id="datosJugador" class="informacion-jugador">
+                    <!-- Datos cargados desde sessionStorage -->
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================================
+             ZONA CENTRAL
+             DOS COLUMNAS
+        ========================================== -->
+
+        <section class="zona-central">
+
+
+            <!-- =====================================
+                 PANEL SUPERIOR IZQUIERDO
+            ====================================== -->
+
+            <section class="panel panel-personajes">
+
+                <div class="titulo-panel">
+
+                    <h2>Selección de personajes</h2>
+
+                </div>
+
+
+                <div class="contenido-panel personajes">
+
+                    <p>
+                        Aquí aparecerán los personajes
+                        disponibles para seleccionar.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 PANEL SUPERIOR DERECHO
+            ====================================== -->
+
+            <section class="panel panel-salas">
+
+                <div class="titulo-panel">
+
+                    <h2>Salas creadas</h2>
+
+                </div>
+
+
+                <div id="listaSalas" class="contenido-panel lista-salas">
+
+                    <!--
+                        Los grupos creados desde
+                        panel_grupo aparecerán aquí.
+                    -->
+
+                </div>
+
+            </section>
+
+
+        </section>
+
+
+        <!-- =========================================
+             ZONA INFERIOR
+        ========================================== -->
+
+        <section class="zona-inferior">
+
+            <section class="panel panel-detalle-sala">
+                <div class="titulo-panel">
+                    <h2>Detalle de la sala</h2>
+                </div>
+
+                <div id="detalleSala" class="contenido-panel detalle-contenido" aria-live="polite">
+                    <p class="sin-seleccion">Selecciona una sala para ver sus detalles.</p>
+                </div>
+            </section>
+
+            <section class="panel panel-acciones">
+                <div class="titulo-panel">
+                    <h2>Acciones</h2>
+                </div>
+
+                <div class="contenido-panel acciones">
+                    <button id="btnIniciarJuego" class="boton boton-iniciar" type="button">
+                        Comenzar juego
+                    </button>
+
+                    <button id="btnVolver" class="boton boton-volver" type="button">
+                        Volver
+                    </button>
+                </div>
+            </section>
 
         </section>
 
     </main>
+
 
     <script src="../js/panel_sala.js"></script>
 

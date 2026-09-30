@@ -1,115 +1,213 @@
-const volumenGeneral = document.getElementById("volumenGeneral");
-const volumenMusica = document.getElementById("volumenMusica");
-const volumenEfectos = document.getElementById("volumenEfectos");
-const sensibilidad = document.getElementById("sensibilidad");
+// =================================
+// VERIFICAR ACCESO DOCENTE
+// =================================
 
-const valorVolumenGeneral = document.getElementById("valorVolumenGeneral");
-const valorVolumenMusica = document.getElementById("valorVolumenMusica");
-const valorVolumenEfectos = document.getElementById("valorVolumenEfectos");
-const valorSensibilidad = document.getElementById("valorSensibilidad");
+const accesoDocente =
+    sessionStorage.getItem("accesoDocente");
 
-const calidad = document.getElementById("calidad");
-const fps = document.getElementById("fps");
-const pantallaCompleta = document.getElementById("pantallaCompleta");
-const mostrarFps = document.getElementById("mostrarFps");
+if (accesoDocente !== "true") {
 
-function actualizarValores() {
-    valorVolumenGeneral.textContent = volumenGeneral.value + "%";
-    valorVolumenMusica.textContent = volumenMusica.value + "%";
-    valorVolumenEfectos.textContent = volumenEfectos.value + "%";
-    valorSensibilidad.textContent = sensibilidad.value;
+    window.location.href = "panel_docente.html";
+
 }
 
-function aplicarVolumen() {
-    const general = Number(volumenGeneral.value) / 100;
-    const musica = Number(volumenMusica.value) / 100;
-    const efectos = Number(volumenEfectos.value) / 100;
 
-    document.querySelectorAll(".audio-musica").forEach(audio => {
-        audio.volume = general * musica;
-    });
+// =================================
+// ELEMENTOS
+// =================================
 
-    document.querySelectorAll(".audio-efecto").forEach(audio => {
-        audio.volume = general * efectos;
-    });
+const btnPreguntas =
+    document.getElementById("btnPreguntas");
+
+const btnAgregarPreguntas =
+    document.getElementById("btnAgregarPreguntas");
+
+const btnCrearGrupos =
+    document.getElementById("btnCrearGrupos");
+
+const btnCargarJuego =
+    document.getElementById("btnCargarJuego");
+
+const btnVolver =
+    document.getElementById("btnVolver");
+
+const cantidadSeleccionada =
+    document.getElementById("cantidadSeleccionada");
+
+const preguntasRegistradas =
+    document.getElementById("preguntasRegistradas");
+
+
+// =================================
+// ELEMENTOS DEL MODAL
+// =================================
+
+const modalPreguntas =
+    document.getElementById("modalPreguntas");
+
+const cantidadPreguntas =
+    document.getElementById("cantidadPreguntas");
+
+const mensajePreguntas =
+    document.getElementById("mensajePreguntas");
+
+const btnGuardarPreguntas =
+    document.getElementById("btnGuardarPreguntas");
+
+const btnCancelarPreguntas =
+    document.getElementById("btnCancelarPreguntas");
+
+
+// =================================
+// CARGAR CANTIDAD GUARDADA
+// =================================
+
+const cantidadGuardada =
+    sessionStorage.getItem("cantidadPreguntas");
+
+if (cantidadGuardada) {
+
+    cantidadSeleccionada.textContent =
+        `${cantidadGuardada} preguntas`;
+
 }
 
-function actualizarConfiguracion() {
-    actualizarValores();
-    aplicarVolumen();
+const preguntasGuardadas = JSON.parse(
+    sessionStorage.getItem("preguntasFreeSIMON") || "[]"
+);
+
+if (preguntasGuardadas.length > 0) {
+
+    preguntasRegistradas.textContent =
+        preguntasGuardadas.length === 1
+            ? "1 pregunta agregada"
+            : `${preguntasGuardadas.length} preguntas agregadas`;
+
 }
 
-volumenGeneral.addEventListener("input", actualizarConfiguracion);
-volumenMusica.addEventListener("input", actualizarConfiguracion);
-volumenEfectos.addEventListener("input", actualizarConfiguracion);
 
-sensibilidad.addEventListener("input", function () {
-    valorSensibilidad.textContent = sensibilidad.value;
+// =================================
+// ABRIR EDITOR DE PREGUNTAS
+// =================================
+
+btnAgregarPreguntas.addEventListener("click", () => {
+
+    window.location.href = "panel_pregunta.html";
+
 });
 
-document.getElementById("btnGuardar").addEventListener("click", function () {
-    const configuracion = {
-        volumenGeneral: volumenGeneral.value,
-        volumenMusica: volumenMusica.value,
-        volumenEfectos: volumenEfectos.value,
-        sensibilidad: sensibilidad.value,
-        calidad: calidad.value,
-        fps: fps.value,
-        pantallaCompleta: pantallaCompleta.checked,
-        mostrarFps: mostrarFps.checked
-    };
 
-    localStorage.setItem(
-        "simonCraftConfig",
-        JSON.stringify(configuracion)
-    );
+// =================================
+// ABRIR VENTANA DE PREGUNTAS
+// =================================
 
-    alert("Configuración guardada");
+btnPreguntas.addEventListener("click", () => {
+
+    mensajePreguntas.textContent = "";
+
+    cantidadPreguntas.value =
+        sessionStorage.getItem("cantidadPreguntas") || "";
+
+    modalPreguntas.classList.remove("oculto");
+
+    cantidadPreguntas.focus();
+
 });
 
-document.getElementById("btnRestablecer").addEventListener("click", function () {
-    volumenGeneral.value = 80;
-    volumenMusica.value = 60;
-    volumenEfectos.value = 80;
-    sensibilidad.value = 50;
 
-    calidad.value = "alto";
-    fps.value = "60";
+// =================================
+// GUARDAR CANTIDAD
+// =================================
 
-    pantallaCompleta.checked = false;
-    mostrarFps.checked = false;
+btnGuardarPreguntas.addEventListener("click", () => {
 
-    localStorage.removeItem("simonCraftConfig");
+    const cantidad =
+        Number(cantidadPreguntas.value);
 
-    actualizarConfiguracion();
-});
 
-document.getElementById("btnVolver").addEventListener("click", function () {
-    window.history.back();
-});
+    // ===============================
+    // VALIDAR
+    // ===============================
 
-function cargarConfiguracion() {
-    const datos = localStorage.getItem("simonCraftConfig");
+    if (
+        cantidad < 1 ||
+        cantidad > 30 ||
+        !Number.isInteger(cantidad)
+    ) {
 
-    if (datos) {
-        const configuracion = JSON.parse(datos);
+        mensajePreguntas.textContent =
+            "La cantidad debe estar entre 1 y 30.";
 
-        volumenGeneral.value = configuracion.volumenGeneral ?? 80;
-        volumenMusica.value = configuracion.volumenMusica ?? 60;
-        volumenEfectos.value = configuracion.volumenEfectos ?? 80;
-        sensibilidad.value = configuracion.sensibilidad ?? 50;
+        cantidadPreguntas.focus();
 
-        calidad.value = configuracion.calidad ?? "alto";
-        fps.value = configuracion.fps ?? "60";
-
-        pantallaCompleta.checked =
-            configuracion.pantallaCompleta ?? false;
-
-        mostrarFps.checked =
-            configuracion.mostrarFps ?? false;
+        return;
     }
 
-    actualizarConfiguracion();
-}
 
-cargarConfiguracion();
+    // ===============================
+    // GUARDAR
+    // ===============================
+
+    sessionStorage.setItem(
+        "cantidadPreguntas",
+        cantidad
+    );
+
+
+    cantidadSeleccionada.textContent =
+        `${cantidad} preguntas`;
+
+
+    // ===============================
+    // CERRAR
+    // ===============================
+
+    modalPreguntas.classList.add("oculto");
+
+});
+
+
+// =================================
+// CANCELAR
+// =================================
+
+btnCancelarPreguntas.addEventListener("click", () => {
+
+    modalPreguntas.classList.add("oculto");
+
+});
+
+
+// =================================
+// CREAR GRUPOS
+// =================================
+
+btnCrearGrupos.addEventListener("click", () => {
+
+    window.location.href = "panel_grupo.html";
+
+});
+
+
+// =================================
+// CARGAR JUEGO
+// =================================
+
+// Por ahora sin funcionalidad.
+
+btnCargarJuego.addEventListener("click", () => {
+
+    // Se programará posteriormente.
+
+});
+
+
+// =================================
+// VOLVER
+// =================================
+
+btnVolver.addEventListener("click", () => {
+
+    window.location.href = "../index.html";
+
+});

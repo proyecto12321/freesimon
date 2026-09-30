@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Grupos - FreeSIMON</title>
+
+    <link rel="stylesheet" href="../css/panel_grupo.css">
+
+</head>
+
+<body>
+
+    <main class="contenedor">
+
+        <section class="tarjeta">
+
+            <h1>Formar grupos</h1>
+
+            <p class="descripcion">
+                Crea los grupos y establece la cantidad de estudiantes permitidos.
+            </p>
+
+
+            <!-- FORMULARIO PARA AGREGAR GRUPO -->
+
+            <div class="formulario">
+
+                <div class="campo">
+
+                    <label for="numeroGrupo">
+                        Número de grupo
+                    </label>
+
+                    <select id="numeroGrupo">
+
+                        <option value="">Seleccionar grupo</option>
+
+                        <option value="1">Grupo 1</option>
+                        <option value="2">Grupo 2</option>
+                        <option value="3">Grupo 3</option>
+                        <option value="4">Grupo 4</option>
+                        <option value="5">Grupo 5</option>
+                        <option value="6">Grupo 6</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="nombreGrupo">
+                        Nombre de grupo
+                    </label>
+
+                    <input type="text" id="nombreGrupo" placeholder="Ejemplo: Los campeones" maxlength="50"
+                        autocomplete="off">
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="cantidadEstudiantes">
+                        Cantidad de estudiantes
+                    </label>
+
+                    <input type="number" id="cantidadEstudiantes" min="1" placeholder="Ejemplo: 5">
+
+                </div>
+
+
+                <p id="mensaje" class="mensaje"></p>
+
+
+                <button id="btnAgregarGrupo" class="btn btn-agregar">
+                    Agregar grupo
+                </button>
+
+            </div>
+
+
+            <!-- GRUPOS CREADOS -->
+
+            <div class="seccion-grupos">
+
+                <h2>Grupos creados</h2>
+
+                <div id="listaGrupos" class="lista-grupos">
+
+                    <!-- Aquí aparecerán los grupos -->
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTÓN VOLVER -->
+
+            <button id="btnVolver" class="btn btn-volver">
+                Volver
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <script src="../js/panel_grupo.js"></script>
+
+</body>
+
+</html>

@@ -1,44 +1,481 @@
+/* =========================================
+   CONFIGURACIÓN GENERAL
+========================================= */
+
 * {
     box-sizing: border-box;
+
     margin: 0;
+
     padding: 0;
 }
 
+html,
+body {
+    width: 100%;
+
+    height: 100%;
+
+    font-family: Arial, sans-serif;
+
+    background: #f2f4f7;
+}
+
+
+/* =========================================
+   SALA PRINCIPAL
+========================================= */
+
 body {
     min-height: 100vh;
-    font-family: Arial, sans-serif;
-    background: #f2f4f7;
+}
 
+.sala {
+    width: 100%;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* =========================================
+   1. FRANJA SUPERIOR
+========================================= */
+
+.franja-superior {
+    width: 100%;
+
+    min-height: 120px;
+
+    padding: 20px 30px;
+
+    background: white;
+
+    border-bottom: 1px solid #d9d9d9;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   DATOS DEL JUGADOR
+========================================= */
+
+.datos-jugador {
+    width: 100%;
+
+    text-align: center;
+}
+
+.datos-jugador h1 {
+    margin-bottom: 12px;
+
+    font-size: 28px;
+
+    color: #222;
+}
+
+.informacion-jugador {
+    font-size: 18px;
+
+    color: #555;
+}
+
+
+/* =========================================
+   2 Y 3. ZONA CENTRAL
+========================================= */
+
+.zona-central {
+    width: 100%;
+
+    flex: 1;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr);
+
+    min-height: 0;
+}
+
+.zona-inferior {
+    width: 100%;
+    min-height: 190px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid #d9d9d9;
+}
+
+
+/* =========================================
+   PANELES CENTRALES
+========================================= */
+
+.panel {
+    min-width: 0;
+
+    min-height: 0;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* =========================================
+   PANEL IZQUIERDO
+   SELECCIÓN DE PERSONAJES
+========================================= */
+
+.panel-personajes {
+    background: white;
+
+    border-right: 1px solid #d9d9d9;
+}
+
+
+/* =========================================
+   PANEL DERECHO
+   SALAS
+========================================= */
+
+.panel-salas {
+    background: #f8f9fa;
+}
+
+.panel-detalle-sala {
+    background: #f8f9fa;
+    border-right: 1px solid #d9d9d9;
+}
+
+.panel-acciones {
+    background: white;
+}
+
+.detalle-contenido {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.contenedor {
-    width: 100%;
-    padding: 20px;
-}
-
-.tarjeta {
-    width: 100%;
-    max-width: 500px;
-    margin: auto;
-
-    padding: 35px;
-
-    background: white;
-    border-radius: 15px;
-
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
-
+.sin-seleccion {
+    color: #777;
     text-align: center;
 }
 
-h1 {
-    margin-bottom: 20px;
+.resumen-sala {
+    width: 100%;
+    max-width: 500px;
+    padding: 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
 }
 
-#datosJugador {
+.resumen-sala h3 {
+    margin-bottom: 12px;
+    font-size: 19px;
+    color: #222;
+    overflow-wrap: anywhere;
+}
+
+.resumen-sala p {
+    margin-top: 7px;
     color: #555;
-    font-size: 18px;
+}
+
+.tarjeta-grupo {
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.tarjeta-grupo:hover,
+.tarjeta-grupo:focus-visible {
+    border-color: #777;
+    outline: none;
+}
+
+.tarjeta-grupo.seleccionada {
+    border-color: #333;
+    background: #f0f0f0;
+}
+
+
+/* =========================================
+   TÍTULOS DE LOS PANELES
+========================================= */
+
+.titulo-panel {
+    width: 100%;
+
+    padding: 20px;
+
+    border-bottom: 1px solid #ddd;
+
+    background: white;
+
+    flex-shrink: 0;
+}
+
+.titulo-panel h2 {
+    text-align: center;
+
+    font-size: 21px;
+
+    color: #222;
+}
+
+
+/* =========================================
+   CONTENIDO DE LOS PANELES
+========================================= */
+
+.contenido-panel {
+    flex: 1;
+
+    min-height: 0;
+
+    padding: 25px;
+
+    overflow-y: auto;
+}
+
+
+/* =========================================
+   PERSONAJES
+========================================= */
+
+.personajes {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: #777;
+}
+
+.personajes p {
+    max-width: 400px;
+
+    padding: 30px;
+
+    border: 2px dashed #ccc;
+
+    border-radius: 12px;
+}
+
+
+/* =========================================
+   LISTA DE SALAS
+========================================= */
+
+.lista-salas {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+
+/* =========================================
+   MENSAJE SIN GRUPOS
+========================================= */
+
+.sin-grupos {
+    width: 100%;
+
+    min-height: 150px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: #777;
+}
+
+
+/* =========================================
+   TARJETA DE CADA GRUPO
+========================================= */
+
+.tarjeta-grupo {
+    width: 100%;
+
+    padding: 18px;
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.tarjeta-grupo h3 {
+    margin-bottom: 12px;
+
+    font-size: 19px;
+
+    color: #222;
+}
+
+.tarjeta-grupo p {
+    margin-bottom: 6px;
+
+    font-size: 15px;
+
+    color: #555;
+}
+
+.tarjeta-grupo p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.acciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.boton {
+    min-width: 190px;
+
+    padding: 14px 25px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+/* =========================================
+   INICIAR JUEGO
+========================================= */
+
+.boton-iniciar {
+    background: #333;
+
+    color: white;
+}
+
+.boton-iniciar:hover {
+    background: #222;
+}
+
+
+/* =========================================
+   VOLVER
+========================================= */
+
+.boton-volver {
+    background: #e9e9e9;
+
+    color: #333;
+}
+
+.boton-volver:hover {
+    background: #dcdcdc;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .franja-superior {
+        min-height: 105px;
+
+        padding: 15px;
+    }
+
+    .datos-jugador h1 {
+        font-size: 23px;
+    }
+
+    .informacion-jugador {
+        font-size: 16px;
+    }
+
+
+    .zona-central {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+    }
+
+    .panel-personajes {
+        min-height: 350px;
+
+        border-right: none;
+
+        border-bottom: 1px solid #d9d9d9;
+    }
+
+    .panel-salas {
+        min-height: 350px;
+    }
+
+    .zona-inferior {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-detalle-sala {
+        min-height: 190px;
+        border-right: none;
+        border-bottom: 1px solid #d9d9d9;
+    }
+
+    .panel-acciones {
+        min-height: 200px;
+    }
+
+    .acciones {
+        flex-direction: column;
+        padding: 15px 20px;
+        gap: 10px;
+    }
+
+    .boton {
+        width: 100%;
+
+        max-width: 350px;
+    }
+
 }

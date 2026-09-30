@@ -1,154 +1,160 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración | Simon Craft</title>
+
+    <title>Panel de administración docente - FreeSIMON</title>
+
     <link rel="stylesheet" href="../css/panel_configuracion.css">
+
 </head>
+
 <body>
-    <main class="config-container">
-        <div class="config-panel">
-            <div class="config-header">
-              <button id="btnVolver" class="btn-volver">  
+
+    <main class="contenedor">
+
+        <section class="panel">
+
+            <h1>
+                Panel de administración docente
+            </h1>
+
+
+            <p class="descripcion">
+                Configura la actividad antes de iniciar el juego.
+            </p>
+
+
+            <!-- =================================
+                 BOTONES PRINCIPALES
+            ================================== -->
+
+            <div class="opciones">
+
+
+                <!-- CANTIDAD DE PREGUNTAS -->
+
+                <button id="btnPreguntas" class="opcion">
+
+                    <span class="titulo-opcion">
+                        Cantidad de preguntas
+                    </span>
+
+                    <span id="cantidadSeleccionada" class="detalle-opcion">
+                        No configurada
+                    </span>
+
                 </button>
-                <h1>CONFIGURACIÓN</h1>
+
+                <button id="btnAgregarPreguntas" class="opcion">
+
+                    <span class="titulo-opcion">
+                        Agregar preguntas
+                    </span>
+
+                    <span id="preguntasRegistradas" class="detalle-opcion">
+                        No hay preguntas agregadas
+                    </span>
+
+                </button>
+
+
+                <!-- CREAR GRUPOS -->
+
+                <button id="btnCrearGrupos" class="opcion">
+
+                    <span class="titulo-opcion">
+                        Crear grupos
+                    </span>
+
+                    <span class="detalle-opcion">
+                        Configurar grupos de estudiantes
+                    </span>
+
+                </button>
+
+
+                <!-- CARGAR JUEGO -->
+
+                <button id="btnCargarJuego" class="opcion">
+
+                    <span class="titulo-opcion">
+                        Cargar juego
+                    </span>
+
+                    <span class="detalle-opcion">
+                        Próximamente
+                    </span>
+
+                </button>
+
+
             </div>
-            <section class="config-section">
-                <h2>SONIDO</h2>
-                <div class="config-option">
-                    <label for="volumenGeneral">
-                        Volumen general
-                    </label>
-                    <input type="range" id="volumenGeneral" min="0" max="100" value="80">
-                    <span id="valorVolumenGeneral">
-                        80%
-                    </span>
-                </div>
-                <div class="config-option">
-                    <label for="volumenMusica">
-                        Música
-                    </label>
-                    <input type="range" id="volumenMusica" min="0" max="100" value="60">
-                    <span id="valorVolumenMusica">
-                        60%
-                    </span>
-                </div>
-                <div class="config-option">
-                    <label for="volumenEfectos">
-                        Efectos
-                    </label>
-                    <input type="range" id="volumenEfectos" min="0" max="100" value="80">
-                    <span id="valorVolumenEfectos">
-                        80%
-                    </span>
-                </div>
-            </section>
-            <section class="config-section">
 
-                <h2>VIDEO</h2>
 
-                <div class="config-option">
+            <!-- =================================
+                 BOTÓN VOLVER
+            ================================== -->
 
-                    <label for="calidad">
-                        Calidad gráfica
-                    </label>
+            <button id="btnVolver" class="btn-volver">
+                Volver
+            </button>
 
-                    <select id="calidad">
+        </section>
 
-                        <option value="bajo">
-                            Bajo
-                        </option>
 
-                        <option value="medio">
-                            Medio
-                        </option>
+        <!-- =================================
+             VENTANA TEMPORAL
+             CANTIDAD DE PREGUNTAS
+        ================================== -->
 
-                        <option value="alto" selected>
-                            Alto
-                        </option>
+        <div id="modalPreguntas" class="modal oculto">
 
-                    </select>
+            <div class="modal-contenido">
+
+                <h2>
+                    Cantidad de preguntas
+                </h2>
+
+                <p>
+                    Selecciona cuántas preguntas tendrá
+                    el juego.
+                </p>
+
+
+                <label for="cantidadPreguntas">
+                    Número de preguntas
+                </label>
+
+                <input type="number" id="cantidadPreguntas" min="1" max="30" placeholder="Máximo 30">
+
+
+                <p id="mensajePreguntas" class="mensaje"></p>
+
+
+                <div class="botones-modal">
+
+                    <button id="btnGuardarPreguntas" class="btn-guardar">
+                        Guardar
+                    </button>
+
+                    <button id="btnCancelarPreguntas" class="btn-cancelar">
+                        Cancelar
+                    </button>
 
                 </div>
-
-
-                <div class="config-option">
-
-                    <label for="fps">
-                        Límite de FPS
-                    </label>
-
-                    <select id="fps">
-
-                        <option value="30">30 FPS</option>
-                        <option value="60" selected>60 FPS</option>
-                        <option value="120">120 FPS</option>
-                        <option value="144">144 FPS</option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="config-option">
-
-                    <label for="pantallaCompleta">
-                        Pantalla completa
-                    </label>
-
-                    <input type="checkbox" id="pantallaCompleta">
-
-                </div>
-
-            </section>
-            <section class="config-section">
-
-                <h2>JUEGO</h2>
-
-                <div class="config-option">
-
-                    <label for="sensibilidad">
-                        Sensibilidad
-                    </label>
-
-                    <input type="range" id="sensibilidad" min="1" max="100" value="50">
-
-                    <span id="valorSensibilidad">
-                        50
-                    </span>
-
-                </div>
-
-
-                <div class="config-option">
-
-                    <label for="mostrarFps">
-                        Mostrar FPS
-                    </label>
-
-                    <input type="checkbox" id="mostrarFps">
-
-                </div>
-
-            </section>
-
-
-            <div class="config-actions">
-
-                <button id="btnGuardar">
-                    GUARDAR CAMBIOS
-                </button>
-
-                <button id="btnRestablecer">
-                    RESTABLECER
-                </button>
 
             </div>
 
         </div>
 
     </main>
+
+
     <script src="../js/panel_configuracion.js"></script>
 
 </body>
