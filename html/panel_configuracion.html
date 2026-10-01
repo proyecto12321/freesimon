@@ -87,10 +87,13 @@
                         </span>
 
                         <span class="detalle-opcion">
-                            Próximamente
+                            Guardar la configuración y abrir las salas
                         </span>
 
                     </button>
+
+                    <p id="mensajeCargarJuego" class="mensaje-cargar-juego" role="status"
+                        aria-live="polite"></p>
 
 
                 </div>
@@ -155,12 +158,18 @@
         </main>
 
         <aside class="panel-escenarios" aria-labelledby="tituloEscenarios">
-            <h2 id="tituloEscenarios">Selecciona escenario</h2>
-            <p>Los escenarios disponibles aparecerán aquí.</p>
+            <div class="encabezado-escenarios">
+                <h2 id="tituloEscenarios">Elige tu escenario</h2>
+                <p>Selecciona el mundo donde se jugará la aventura.</p>
+            </div>
+            <div id="listaEscenarios" class="lista-escenarios" aria-label="Escenarios disponibles"></div>
+            <p id="estadoEscenario" class="estado-escenario" role="status" aria-live="polite">
+                Aún no has seleccionado un escenario.
+            </p>
         </aside>
     </div>
 
-    <script src="../js/panel_configuracion.js"></script>
+    <script src="../js/panel_configuracion.js?v=escenarios"></script>
 
 </body>
 

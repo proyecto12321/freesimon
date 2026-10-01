@@ -1,4 +1,4 @@
-DESIERTO · PROTOTIPO INDEPENDIENTE 1.0
+DESIERTO · PROTOTIPO INDEPENDIENTE 2.0
 
 INSTALACIÓN
 1. Extrae los cinco archivos del ZIP en la carpeta data de tu proyecto.
@@ -11,6 +11,8 @@ INSTALACIÓN
 CONTROLES
 W/A/S/D: caminar. Ratón: mirar. Shift: correr. Espacio: saltar.
 E: abrir la caja más cercana a menos de 3,7 unidades.
+T: alternar Automático → Tormenta → Despejado → Automático.
+También puedes elegir el clima en Pausa / ajustes.
 Esc o Pausa / ajustes: detener la exploración.
 Si no se captura el ratón, arrastra con el botón izquierdo o usa las flechas.
 El minimapa muestra tu posición y las cajas; las consumidas quedan atenuadas.
@@ -18,7 +20,13 @@ Las cajas se abren por proximidad; no necesitas apuntar exactamente a ellas.
 
 QUÉ INCLUYE
 - Mundo 3D de bloques, 256 × 256 unidades, con dunas escalonadas.
-- 150 cactus y 110 rocas como objetivo de generación, evitando solapamientos.
+- 240 cactus y 170 rocas como objetivo de generación, evitando solapamientos.
+- Arbustos secos, piedras pequeñas, flores de cactus y ondulaciones de arena.
+- Tres portales de ruinas, caminos de losas y seis formaciones de arenisca.
+- Cielo con gradiente, sol y 32 grupos de nubes cúbicas en movimiento lento.
+- Tormentas con entrada gradual, niebla de arena, ráfagas y partículas visuales.
+- Cofres con tablillas, asas, remaches, cierres y emblemas (libro / espada).
+- Los cofres usados permanecen en el suelo con la tapa abierta.
 - Mesetas en el borde, límites de movimiento y colisiones sencillas.
 - Cinco cajas verdes y cinco rojas; las dos primeras están frente al inicio.
 - Cinco preguntas de ejemplo; +100 puntos por acierto y un intento por caja.
@@ -44,6 +52,11 @@ Edita desierto.config.js, guarda y recarga el HTML.
 - x y z son las coordenadas horizontales. El origen está en el centro.
 - Para este prototipo usa un tamaño múltiplo de 32, entre 64 y 256.
   Si reduces el tamaño, ajusta también las cajas para que queden dentro.
+- cantidadArbustos, cantidadPiedritas y cantidadNubes controlan decoración.
+- clima.modo: 'auto', 'clear' o 'storm'.
+- En automático: 65 s de calma, 10 s de aviso, 12 s de entrada,
+  35 s de tormenta plena y 14 s de salida. Los tiempos están en segundos.
+  Usa valores positivos para entrada y salida. La pausa detiene el clima.
 - Mantén las cajas separadas entre sí y los puntos de inicio despejados.
 - Las preguntas y respuestas son visibles en el código de esta demostración.
 
@@ -53,6 +66,8 @@ encapsulado; únicamente expone DESIERTO_CONFIG y EscenarioDesierto.
 
 API:
 window.EscenarioDesierto.getState() devuelve una copia del estado actual.
+window.EscenarioDesierto.setWeather('storm') cambia el clima.
+También admite 'clear' y 'auto'.
 window.EscenarioDesierto.pause() pausa y abre el menú.
 window.EscenarioDesierto.resume() reanuda; invocar desde un clic del usuario.
 window.EscenarioDesierto.reset() recarga la página y reinicia toda la prueba.
@@ -61,6 +76,7 @@ Eventos de window:
 - escenario:equipo: detail = {id, objeto}
 - escenario:respuesta: detail = {id, seleccion, correcta, puntos}
 - escenario:proteccion: detail = {activa, id?}
+- escenario:clima: detail = {modo}
 
 Estos eventos son puntos de conexión; todavía no implementan red.
 Al integrarlo, el servidor debe validar respuestas, botín, protección,
@@ -76,19 +92,27 @@ El terreno se genera una vez con semilla fija. Se agrupa en sectores y solo
 se dibujan los cercanos. Todos los sectores permanecen en memoria: aún no
 existe carga/descarga continua para mundos mayores. La niebla oculta el
 límite de visión. No hay texturas, modelos descargados ni sombras dinámicas.
+La calidad Baja omite los arbustos y pequeños adornos; Media y Alta los
+muestran. Los cofres detallados, las ruinas, las nubes y la tormenta están
+disponibles en las tres calidades. La tormenta es visual, no causa daño.
+La V2 tiene más geometría que la primera prueba: mide de nuevo los FPS.
 
 VERIFICACIÓN REALIZADA
-Sintaxis JavaScript comprobada. Se comprobó la lógica de inicio, geometría,
-movimiento, preguntas, bloqueo al responder, puntuación, inventario y pausa
-con un entorno simulado; no equivale a una prueba gráfica en navegador.
-No se pudo efectuar la inspección visual porque el navegador de pruebas
-no estaba instalado y falló su descarga.
+Sintaxis JavaScript comprobada. Lógica de movimiento, preguntas, escudo,
+puntuación, inventario, pausa y cambio de clima comprobada en un entorno
+simulado. Los tres programas de shaders se compilaron y enlazaron con un
+contexto gráfico EGL / OpenGL ES. Se reprodujeron las llamadas de dibujo
+y se inspeccionaron imágenes del escenario despejado y con tormenta,
+sin errores de OpenGL. Esto no sustituye la prueba completa en navegador
+ni permite predecir el rendimiento de tu laptop.
 
 PRUEBA EN TU LAPTOP
 1. Abre el juego con calidad Baja y comprueba que el terreno sea visible.
 2. Camina hasta una caja verde y pulsa E; comprueba el bloqueo al responder.
 3. Responde y comprueba los puntos; abre una roja y revisa la mochila.
 4. Recorre el desierto, prueba colisiones, salto, límites y pausa.
-5. Observa los FPS mientras te mueves. Compártelos junto con el modelo exacto
+5. Pulsa T y espera unos 12 segundos para ver la tormenta completa.
+   Pulsa T otra vez para despejar; la arena desaparece en unos 14 segundos.
+6. Observa los FPS mientras te mueves. Compártelos junto con el modelo exacto
    de procesador y gráficos antes de decidir aumentar detalle o distancia.
 El rendimiento de la laptop y de 30 jugadores aún NO está validado.

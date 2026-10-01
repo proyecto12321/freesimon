@@ -65,21 +65,90 @@ body {
 }
 
 .panel-escenarios {
-    min-height: 100%;
+    min-height: 595px;
     padding: 35px;
     background: white;
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
 }
 
-.panel-escenarios h2 {
-    margin-bottom: 12px;
+.encabezado-escenarios {
+    margin-bottom: 20px;
     text-align: center;
+}
+
+.encabezado-escenarios h2 {
+    margin-bottom: 8px;
     font-size: 23px;
 }
 
-.panel-escenarios p {
+.encabezado-escenarios p {
     color: #777;
+    line-height: 1.4;
+}
+
+.lista-escenarios {
+    display: grid;
+    flex: 1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: center;
+    gap: 14px;
+}
+
+.tarjeta-escenario {
+    min-width: 0;
+    padding: 8px;
+    overflow: hidden;
+    border: 2px solid #e3e7ed;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #263445;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.tarjeta-escenario:hover {
+    transform: translateY(-3px);
+    border-color: #8ca6c4;
+    box-shadow: 0 7px 16px rgba(35, 54, 78, 0.12);
+}
+
+.tarjeta-escenario:focus-visible {
+    outline: 3px solid #527ba8;
+    outline-offset: 2px;
+}
+
+.tarjeta-escenario.seleccionado {
+    border-color: #39765c;
+    background: #f0f7f2;
+    box-shadow: 0 0 0 2px rgba(57, 118, 92, 0.16);
+}
+
+.imagen-escenario {
+    display: block;
+    width: 100%;
+    height: 112px;
+    border-radius: 7px;
+    background: #e7ebf0;
+    object-fit: cover;
+}
+
+.nombre-escenario {
+    display: block;
+    padding: 9px 3px 3px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.estado-escenario {
+    min-height: 20px;
+    margin-top: 15px;
+    color: #39765c;
+    font-size: 14px;
+    font-weight: bold;
     text-align: center;
 }
 
@@ -134,6 +203,13 @@ body {
     background: #f0f0f0;
 
     border-color: #bbb;
+}
+
+.mensaje-cargar-juego {
+    min-height: 20px;
+    color: #c0392b;
+    font-size: 14px;
+    text-align: center;
 }
 
 .titulo-opcion {
@@ -361,6 +437,14 @@ body {
     .panel-escenarios {
         min-height: 260px;
         padding: 25px 20px;
+    }
+
+    .lista-escenarios {
+        grid-template-columns: 1fr;
+    }
+
+    .imagen-escenario {
+        height: 160px;
     }
 
     .panel h1 {

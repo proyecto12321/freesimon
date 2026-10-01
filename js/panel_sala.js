@@ -55,9 +55,12 @@ if (!nombre || !grado || !seccion) {
 // CARGAR GRUPOS
 // =========================================
 
-const grupos = JSON.parse(
-    sessionStorage.getItem("gruposFreeSIMON")
-) || [];
+const configuracionJuego = JSON.parse(
+    sessionStorage.getItem("configuracionJuego") || "null"
+);
+const grupos = configuracionJuego
+    ? configuracionJuego.grupos
+    : JSON.parse(sessionStorage.getItem("gruposFreeSIMON") || "[]");
 
 
 // =========================================
@@ -173,9 +176,7 @@ document.addEventListener("personajeSeleccionado", (event) => {
 // Por ahora sin funcionalidad.
 
 btnIniciarJuego.addEventListener("click", () => {
-
-    // Se programará posteriormente.
-
+    window.location.href = "../data/escenario.html";
 });
 
 

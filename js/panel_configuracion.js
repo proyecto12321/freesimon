@@ -37,6 +37,71 @@ const cantidadSeleccionada =
 const preguntasRegistradas =
     document.getElementById("preguntasRegistradas");
 
+const mensajeCargarJuego =
+    document.getElementById("mensajeCargarJuego");
+
+const listaEscenarios =
+    document.getElementById("listaEscenarios");
+
+const estadoEscenario =
+    document.getElementById("estadoEscenario");
+
+const escenarios = [
+    { id: "bosque", nombre: "Bosque Encantado", imagen: "../img/bosque.png" },
+    { id: "desierto", nombre: "Desierto tormentoso", imagen: "../img/desierto.png" },
+    { id: "cielo", nombre: "Paraíso Celestial", imagen: "../img/cielo.png" },
+    { id: "ciudad", nombre: "Metropolitano", imagen: "../img/ciudad.png" },
+    { id: "inframundo", nombre: "Infierno de Dante", imagen: "../img/inframundo.png" },
+    { id: "mar", nombre: "Mar de Globos", imagen: "../img/mar.png" }
+];
+
+function seleccionarEscenario(escenario, tarjeta) {
+    listaEscenarios.querySelectorAll(".tarjeta-escenario").forEach((elemento) => {
+        const seleccionado = elemento === tarjeta;
+        elemento.classList.toggle("seleccionado", seleccionado);
+        elemento.setAttribute("aria-pressed", String(seleccionado));
+    });
+
+    sessionStorage.setItem("escenarioSeleccionado", escenario.id);
+    sessionStorage.setItem("nombreEscenarioSeleccionado", escenario.nombre);
+    estadoEscenario.textContent = `Escenario seleccionado: ${escenario.nombre}`;
+}
+
+function mostrarEscenarios() {
+    const escenarioGuardado = sessionStorage.getItem("escenarioSeleccionado");
+
+    escenarios.forEach((escenario) => {
+        const tarjeta = document.createElement("button");
+        tarjeta.type = "button";
+        tarjeta.className = "tarjeta-escenario";
+        tarjeta.setAttribute("aria-label", `Seleccionar ${escenario.nombre}`);
+        tarjeta.setAttribute("aria-pressed", String(escenario.id === escenarioGuardado));
+        tarjeta.classList.toggle("seleccionado", escenario.id === escenarioGuardado);
+
+        const imagen = document.createElement("img");
+        imagen.className = "imagen-escenario";
+        imagen.src = escenario.imagen;
+        imagen.alt = `Escenario ${escenario.nombre}`;
+        imagen.loading = "lazy";
+
+        const nombre = document.createElement("span");
+        nombre.className = "nombre-escenario";
+        nombre.textContent = escenario.nombre;
+
+        tarjeta.append(imagen, nombre);
+        tarjeta.addEventListener("click", () => seleccionarEscenario(escenario, tarjeta));
+        listaEscenarios.appendChild(tarjeta);
+    });
+
+    const escenarioElegido = escenarios.find(({ id }) => id === escenarioGuardado);
+    if (escenarioElegido) {
+        estadoEscenario.textContent =
+            `Escenario seleccionado: ${escenarioElegido.nombre}`;
+    }
+}
+
+mostrarEscenarios();
+
 
 // =================================
 // ELEMENTOS DEL MODAL
@@ -193,12 +258,45 @@ btnCrearGrupos.addEventListener("click", () => {
 // CARGAR JUEGO
 // =================================
 
-// Por ahora sin funcionalidad.
-
 btnCargarJuego.addEventListener("click", () => {
+    const escenarioId = sessionStorage.getItem("escenarioSeleccionado");
+    const escenario = escenarios.find(({ id }) => id === escenarioId);
 
-    // Se programará posteriormente.
+    if (!escenario) {
+        mensajeCargarJuego.textContent =
+            "Selecciona un escenario antes de cargar el juego.";
+        return;
+    }
 
+    const preguntas = JSON.parse(
+        sessionStorage.getItem("preguntasFreeSIMON") || "[]"
+    );
+    const grupos = JSON.parse(
+        sessionStorage.getItem("gruposFreeSIMON") || "[]"
+    );
+
+    const configuracionJuego = {
+        escenario: {
+            id: escenario.id,
+            nombre: escenario.nombre,
+            imagen: escenario.imagen.replace("../", "")
+        },
+        cantidadPreguntas: Number(
+            sessionStorage.getItem("cantidadPreguntas") || preguntas.length
+        ),
+        preguntas,
+        grupos
+    };
+
+    sessionStorage.setItem(
+        "configuracionJuego",
+        JSON.stringify(configuracionJuego)
+    );
+    sessionStorage.setItem("juegoEscenario", escenario.id);
+    sessionStorage.setItem("juegoPreguntas", JSON.stringify(preguntas));
+    sessionStorage.setItem("juegoGrupos", JSON.stringify(grupos));
+
+    window.location.href = "panel_sala.html";
 });
 
 

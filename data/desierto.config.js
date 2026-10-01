@@ -1,7 +1,9 @@
 /* Datos editables. Script clásico para poder abrir escenario.html con doble clic. */
 window.DESIERTO_CONFIG = {
   nombre: 'Desierto', semilla: 20261001, tamano: 256,
-  cantidadCactus: 150, cantidadRocas: 110,
+  cantidadCactus: 240, cantidadRocas: 170,
+  cantidadArbustos: 650, cantidadPiedritas: 1000, cantidadNubes: 32,
+  clima: { modo: 'auto', calma: 65, aviso: 10, entrada: 12, tormenta: 35, salida: 14 },
   inicio: { x: 0, z: 10 }, tiempoPregunta: 30,
   cajas: [
     { id: 'verde-1', tipo: 'pregunta', x: -3, z: 2, pregunta: 0 },
