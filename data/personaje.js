@@ -1,7 +1,8 @@
 (() => {
     const contenedor = document.getElementById("selectorPersonajes");
+    const portada = document.getElementById("personajePortada");
 
-    if (!contenedor) {
+    if (!contenedor && !portada) {
         return;
     }
 
@@ -295,6 +296,17 @@
         });
 
         return modelo;
+    }
+
+    if (portada) {
+        const escenario = document.createElement("div");
+        escenario.className = "escenario-personaje";
+        escenario.appendChild(crearModelo(personajes[0]));
+        portada.appendChild(escenario);
+    }
+
+    if (!contenedor) {
+        return;
     }
 
     function seleccionarPersonaje(personaje, tarjeta) {
