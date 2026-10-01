@@ -31,6 +31,9 @@ const btnVolver =
 const detalleSala =
     document.getElementById("detalleSala");
 
+let personajeSeleccionado =
+    sessionStorage.getItem("personajeSeleccionado") || "X";
+
 
 // =========================================
 // VERIFICAR DATOS DEL JUGADOR
@@ -147,11 +150,20 @@ function mostrarDetalleSala(grupo) {
     resumen.appendChild(integrantes);
 
     const personaje = document.createElement("p");
-    personaje.textContent = "Personaje: X";
+    personaje.textContent = `Personaje: ${personajeSeleccionado}`;
     resumen.appendChild(personaje);
 
     detalleSala.appendChild(resumen);
 }
+
+document.addEventListener("personajeSeleccionado", (event) => {
+    personajeSeleccionado = event.detail.nombre;
+
+    const personaje = detalleSala.querySelector(".resumen-sala p:last-child");
+    if (personaje) {
+        personaje.textContent = `Personaje: ${personajeSeleccionado}`;
+    }
+});
 
 
 // =========================================
