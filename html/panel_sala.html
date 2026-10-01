@@ -9,13 +9,13 @@
 
     <title>Sala de juego - FreeSIMON</title>
 
-    <link rel="stylesheet" href="../css/panel_sala.css">
+    <link rel="stylesheet" href="../css/panel_sala.css?v=redisenio">
     <link rel="stylesheet" href="../data/personaje.css">
     <link rel="stylesheet" href="../css/tema_bloques.css">
 
 </head>
 
-<body>
+<body class="pantalla-sala">
 
     <main class="sala">
 
@@ -50,17 +50,8 @@
                  PANEL SUPERIOR IZQUIERDO
             ====================================== -->
 
-            <section class="panel panel-personajes">
-
-                <div class="titulo-panel">
-
-                    <h2>Selección de personajes</h2>
-
-                </div>
-
-
+            <section class="panel panel-personajes" aria-label="Selección de personajes">
                 <div id="selectorPersonajes" class="contenido-panel personajes">
-
                 </div>
 
             </section>
@@ -70,15 +61,7 @@
                  PANEL SUPERIOR DERECHO
             ====================================== -->
 
-            <section class="panel panel-salas">
-
-                <div class="titulo-panel">
-
-                    <h2>Salas creadas</h2>
-
-                </div>
-
-
+            <section class="panel panel-salas" aria-label="Salas creadas">
                 <div id="listaSalas" class="contenido-panel lista-salas">
 
                     <!--
@@ -100,21 +83,13 @@
 
         <section class="zona-inferior">
 
-            <section class="panel panel-detalle-sala">
-                <div class="titulo-panel">
-                    <h2>Detalle de la sala</h2>
-                </div>
-
+            <section class="panel panel-detalle-sala" aria-label="Detalle de la sala">
                 <div id="detalleSala" class="contenido-panel detalle-contenido" aria-live="polite">
                     <p class="sin-seleccion">Selecciona una sala para ver sus detalles.</p>
                 </div>
             </section>
 
-            <section class="panel panel-acciones">
-                <div class="titulo-panel">
-                    <h2>Acciones</h2>
-                </div>
-
+            <section class="panel panel-acciones" aria-label="Acciones de la sala">
                 <div class="contenido-panel acciones">
                     <button id="btnIniciarJuego" class="boton boton-iniciar" type="button">
                         Comenzar juego
