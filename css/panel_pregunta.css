@@ -77,6 +77,10 @@ h1 {
 }
 
 .seccion-preguntas {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
     grid-column: 2;
     grid-row: 1;
     border-left: 1px solid #d5d9de;
@@ -180,7 +184,7 @@ textarea:focus,
 .seccion-preguntas {
     min-width: 0;
     min-height: 0;
-    overflow-y: auto;
+    overflow: hidden;
     padding-right: 10px;
 }
 
@@ -191,6 +195,13 @@ textarea:focus,
 
 .sin-preguntas {
     color: #666;
+}
+
+.contenido-lista-preguntas {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
 .lista-preguntas {
@@ -240,7 +251,8 @@ textarea:focus,
 }
 
 .btn-volver {
-    margin-top: 25px;
+    flex-shrink: 0;
+    margin-top: 16px;
     margin-bottom: 4px;
     background: #eee;
     color: #333;
@@ -266,6 +278,7 @@ textarea:focus,
     .seccion-preguntas {
         grid-column: auto;
         grid-row: auto;
+        height: 45vh;
         max-height: 45vh;
         order: 2;
         border-left: 0;
