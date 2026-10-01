@@ -260,24 +260,41 @@ body {
 
 .personajes {
     display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    text-align: center;
-
-    color: #777;
+    align-items: stretch;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-color: #888 #e5e5e5;
+    scrollbar-width: thin;
 }
 
-.personajes p {
-    max-width: 400px;
+.pagina-personajes {
+    display: grid;
+    flex: 0 0 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    min-width: 0;
+    min-height: 0;
+    padding: 12px;
+    scroll-snap-align: start;
+}
 
-    padding: 30px;
+.personajes::-webkit-scrollbar {
+    height: 10px;
+}
 
-    border: 2px dashed #ccc;
+.personajes::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background: #e5e5e5;
+}
 
-    border-radius: 12px;
+.personajes::-webkit-scrollbar-thumb {
+    border: 2px solid #e5e5e5;
+    border-radius: 5px;
+    background: #888;
 }
 
 
@@ -441,7 +458,7 @@ body {
     }
 
     .panel-personajes {
-        min-height: 350px;
+        min-height: 600px;
 
         border-right: none;
 
