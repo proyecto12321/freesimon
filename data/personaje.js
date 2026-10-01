@@ -196,6 +196,43 @@
                 crearParte("nariz", 0, 49, 8, 7, 81, colores.negro)
             ]
         }),
+        crearPersonaje("robot-voxel", "Robot", "#4b91bd", {
+            piel: colores.blanco,
+            ojos: "#35d5d0",
+            boca: "#384957",
+            torso: colores.pelajeGris,
+            brazos: colores.pelajeGris,
+            pantalones: colores.negro,
+            cabeza: [
+                crearParte("antena", 0, -13, 9, 18, 9, colores.coral),
+                crearParte("antena-base", 0, 0, 28, 8, 28, colores.pelajeGris),
+                crearParte("oreja-izquierda", -40, 33, 12, 20, 35, colores.coral),
+                crearParte("oreja-derecha", 40, 33, 12, 20, 35, colores.coral)
+            ],
+            adornos: [
+                crearParte("panel-pecho", 0, 96, 37, 29, 42, colores.verde),
+                crearParte("boton-pecho-izquierdo", -11, 96, 6, 6, 45, colores.coral),
+                crearParte("boton-pecho-derecho", 11, 96, 6, 6, 45, colores.cabelloRubio)
+            ]
+        }),
+        crearPersonaje("alien-voxel", "Alien", "#6cae57", {
+            piel: ["#76bd5c", "#4f873c", "#91d575", "#5a9846", "#a1e184", "#4a7f38"],
+            ojos: "#263442",
+            boca: "#426b3c",
+            torso: ["#497eb2", "#345c86", "#6095c9", "#3d6b9a", "#76a8d6", "#305680"],
+            brazos: ["#76bd5c", "#4f873c", "#91d575", "#5a9846", "#a1e184", "#4a7f38"],
+            pantalones: colores.morado,
+            cabeza: [
+                crearParte("antena-izquierda", -19, -12, 9, 19, 9, colores.piel),
+                crearParte("antena-derecha", 19, -12, 9, 19, 9, colores.piel),
+                crearParte("punta-antena-izquierda", -19, -22, 15, 11, 15, colores.coral),
+                crearParte("punta-antena-derecha", 19, -22, 15, 11, 15, colores.coral)
+            ],
+            adornos: [
+                crearParte("ojo-izquierdo-alien", -18, 39, 17, 17, 76, colores.negro),
+                crearParte("ojo-derecho-alien", 18, 39, 17, 17, 76, colores.negro)
+            ]
+        }),
         crearPersonaje("mono-voxel", "Mono", "#805334", {
             piel: colores.pelajeCafe,
             ojos: "#39302a",

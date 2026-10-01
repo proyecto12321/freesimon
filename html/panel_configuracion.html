@@ -14,146 +14,151 @@
 </head>
 
 <body>
+    <div class="configuracion-layout">
+        <main class="contenedor">
 
-    <main class="contenedor">
+            <section class="panel">
 
-        <section class="panel">
-
-            <h1>
-                Panel de administración docente
-            </h1>
-
-
-            <p class="descripcion">
-                Configura la actividad antes de iniciar el juego.
-            </p>
+                <h1>
+                    Panel de administración docente
+                </h1>
 
 
-            <!-- =================================
+                <p class="descripcion">
+                    Configura la actividad antes de iniciar el juego.
+                </p>
+
+
+                <!-- =================================
                  BOTONES PRINCIPALES
             ================================== -->
 
-            <div class="opciones">
+                <div class="opciones">
 
 
-                <!-- CANTIDAD DE PREGUNTAS -->
+                    <!-- CANTIDAD DE PREGUNTAS -->
 
-                <button id="btnPreguntas" class="opcion">
+                    <button id="btnPreguntas" class="opcion">
 
-                    <span class="titulo-opcion">
-                        Cantidad de preguntas
-                    </span>
+                        <span class="titulo-opcion">
+                            Cantidad de preguntas
+                        </span>
 
-                    <span id="cantidadSeleccionada" class="detalle-opcion">
-                        No configurada
-                    </span>
+                        <span id="cantidadSeleccionada" class="detalle-opcion">
+                            No configurada
+                        </span>
 
-                </button>
+                    </button>
 
-                <button id="btnAgregarPreguntas" class="opcion">
+                    <button id="btnAgregarPreguntas" class="opcion">
 
-                    <span class="titulo-opcion">
-                        Agregar preguntas
-                    </span>
+                        <span class="titulo-opcion">
+                            Agregar preguntas
+                        </span>
 
-                    <span id="preguntasRegistradas" class="detalle-opcion">
-                        No hay preguntas agregadas
-                    </span>
+                        <span id="preguntasRegistradas" class="detalle-opcion">
+                            No hay preguntas agregadas
+                        </span>
 
-                </button>
-
-
-                <!-- CREAR GRUPOS -->
-
-                <button id="btnCrearGrupos" class="opcion">
-
-                    <span class="titulo-opcion">
-                        Crear grupos
-                    </span>
-
-                    <span class="detalle-opcion">
-                        Configurar grupos de estudiantes
-                    </span>
-
-                </button>
+                    </button>
 
 
-                <!-- CARGAR JUEGO -->
+                    <!-- CREAR GRUPOS -->
 
-                <button id="btnCargarJuego" class="opcion">
+                    <button id="btnCrearGrupos" class="opcion">
 
-                    <span class="titulo-opcion">
-                        Cargar juego
-                    </span>
+                        <span class="titulo-opcion">
+                            Crear grupos
+                        </span>
 
-                    <span class="detalle-opcion">
-                        Próximamente
-                    </span>
+                        <span class="detalle-opcion">
+                            Configurar grupos de estudiantes
+                        </span>
 
-                </button>
-
-
-            </div>
+                    </button>
 
 
-            <!-- =================================
+                    <!-- CARGAR JUEGO -->
+
+                    <button id="btnCargarJuego" class="opcion">
+
+                        <span class="titulo-opcion">
+                            Cargar juego
+                        </span>
+
+                        <span class="detalle-opcion">
+                            Próximamente
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- =================================
                  BOTÓN VOLVER
             ================================== -->
 
-            <button id="btnVolver" class="btn-volver">
-                Volver
-            </button>
+                <button id="btnVolver" class="btn-volver">
+                    Volver
+                </button>
 
-        </section>
+            </section>
 
 
-        <!-- =================================
+            <!-- =================================
              VENTANA TEMPORAL
              CANTIDAD DE PREGUNTAS
         ================================== -->
 
-        <div id="modalPreguntas" class="modal oculto">
+            <div id="modalPreguntas" class="modal oculto">
 
-            <div class="modal-contenido">
+                <div class="modal-contenido">
 
-                <h2>
-                    Cantidad de preguntas
-                </h2>
+                    <h2>
+                        Cantidad de preguntas
+                    </h2>
 
-                <p>
-                    Selecciona cuántas preguntas tendrá
-                    el juego.
-                </p>
-
-
-                <label for="cantidadPreguntas">
-                    Número de preguntas
-                </label>
-
-                <input type="number" id="cantidadPreguntas" min="1" max="30" placeholder="Máximo 30">
+                    <p>
+                        Selecciona cuántas preguntas tendrá
+                        el juego.
+                    </p>
 
 
-                <p id="mensajePreguntas" class="mensaje"></p>
+                    <label for="cantidadPreguntas">
+                        Número de preguntas
+                    </label>
+
+                    <input type="number" id="cantidadPreguntas" min="1" max="30" placeholder="Máximo 30">
 
 
-                <div class="botones-modal">
+                    <p id="mensajePreguntas" class="mensaje"></p>
 
-                    <button id="btnGuardarPreguntas" class="btn-guardar">
-                        Guardar
-                    </button>
 
-                    <button id="btnCancelarPreguntas" class="btn-cancelar">
-                        Cancelar
-                    </button>
+                    <div class="botones-modal">
+
+                        <button id="btnGuardarPreguntas" class="btn-guardar">
+                            Guardar
+                        </button>
+
+                        <button id="btnCancelarPreguntas" class="btn-cancelar">
+                            Cancelar
+                        </button>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+        </main>
 
-    </main>
-
+        <aside class="panel-escenarios" aria-labelledby="tituloEscenarios">
+            <h2 id="tituloEscenarios">Selecciona escenario</h2>
+            <p>Los escenarios disponibles aparecerán aquí.</p>
+        </aside>
+    </div>
 
     <script src="../js/panel_configuracion.js"></script>
 

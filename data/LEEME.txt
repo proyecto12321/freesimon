@@ -1,0 +1,94 @@
+DESIERTO · PROTOTIPO INDEPENDIENTE 1.0
+
+INSTALACIÓN
+1. Extrae los cinco archivos del ZIP en la carpeta data de tu proyecto.
+2. Mantén escenario.html, escenario.js, escenario.css y desierto.config.js juntos.
+3. Abre escenario.html con Chrome, Edge o Firefox en una computadora con WebGL.
+   Se puede abrir con doble clic; no usa fetch, módulos, CDN ni internet.
+   También puedes abrirlo con Live Server desde Visual Studio Code.
+4. Pulsa «Explorar desierto». Empieza con calidad Baja.
+
+CONTROLES
+W/A/S/D: caminar. Ratón: mirar. Shift: correr. Espacio: saltar.
+E: abrir la caja más cercana a menos de 3,7 unidades.
+Esc o Pausa / ajustes: detener la exploración.
+Si no se captura el ratón, arrastra con el botón izquierdo o usa las flechas.
+El minimapa muestra tu posición y las cajas; las consumidas quedan atenuadas.
+Las cajas se abren por proximidad; no necesitas apuntar exactamente a ellas.
+
+QUÉ INCLUYE
+- Mundo 3D de bloques, 256 × 256 unidades, con dunas escalonadas.
+- 150 cactus y 110 rocas como objetivo de generación, evitando solapamientos.
+- Mesetas en el borde, límites de movimiento y colisiones sencillas.
+- Cinco cajas verdes y cinco rojas; las dos primeras están frente al inicio.
+- Cinco preguntas de ejemplo; +100 puntos por acierto y un intento por caja.
+- Escudo lógico y movimiento bloqueado mientras se responde (30 segundos).
+- Al responder o vencer el plazo, regreso automático después de 3 segundos.
+- Salir de una pregunta sin contestar consume el intento como no acertado.
+- Equipamiento de muestra: arco, hacha, espada, pistola y metralleta.
+- Las armas solo aparecen en la mochila: NO hay ataques ni modelos de armas.
+- Calidad baja, media y alta, coordenadas, minimapa y contador de FPS.
+
+ARCHIVOS
+escenario.html: pantalla y elementos de interfaz.
+escenario.css: apariencia de los menús y controles.
+escenario.js: generación, render WebGL, movimiento y lógica de demostración.
+desierto.config.js: semilla, tamaño, objetos, preguntas y cajas editables.
+LEEME.txt: estas instrucciones.
+
+PERSONALIZACIÓN
+Edita desierto.config.js, guarda y recarga el HTML.
+- «correcta» es el índice de la respuesta: 0 = primera, 1 = segunda, etc.
+- «pregunta» en una caja es el índice de una entrada de «preguntas».
+- «objeto» es el nombre que entrega una caja roja.
+- x y z son las coordenadas horizontales. El origen está en el centro.
+- Para este prototipo usa un tamaño múltiplo de 32, entre 64 y 256.
+  Si reduces el tamaño, ajusta también las cajas para que queden dentro.
+- Mantén las cajas separadas entre sí y los puntos de inicio despejados.
+- Las preguntas y respuestas son visibles en el código de esta demostración.
+
+INTEGRACIÓN POSTERIOR
+No cambia ni importa archivos existentes de tu proyecto. El código está
+encapsulado; únicamente expone DESIERTO_CONFIG y EscenarioDesierto.
+
+API:
+window.EscenarioDesierto.getState() devuelve una copia del estado actual.
+window.EscenarioDesierto.pause() pausa y abre el menú.
+window.EscenarioDesierto.resume() reanuda; invocar desde un clic del usuario.
+window.EscenarioDesierto.reset() recarga la página y reinicia toda la prueba.
+
+Eventos de window:
+- escenario:equipo: detail = {id, objeto}
+- escenario:respuesta: detail = {id, seleccion, correcta, puntos}
+- escenario:proteccion: detail = {activa, id?}
+
+Estos eventos son puntos de conexión; todavía no implementan red.
+Al integrarlo, el servidor debe validar respuestas, botín, protección,
+tiempo, posiciones y acciones. No confiar en puntos ni flags enviados por
+el navegador. Tampoco enviar las soluciones al cliente durante la partida.
+
+ALCANCE Y RENDIMIENTO
+Es una demostración local para UN jugador, sin backend, combate, guardado,
+selector de mapas ni panel docente. Al recargar se pierde el progreso.
+No es un motor completo de Minecraft ni permite destruir o colocar bloques.
+La protección es un estado de prueba; no hay daño que bloquear todavía.
+El terreno se genera una vez con semilla fija. Se agrupa en sectores y solo
+se dibujan los cercanos. Todos los sectores permanecen en memoria: aún no
+existe carga/descarga continua para mundos mayores. La niebla oculta el
+límite de visión. No hay texturas, modelos descargados ni sombras dinámicas.
+
+VERIFICACIÓN REALIZADA
+Sintaxis JavaScript comprobada. Se comprobó la lógica de inicio, geometría,
+movimiento, preguntas, bloqueo al responder, puntuación, inventario y pausa
+con un entorno simulado; no equivale a una prueba gráfica en navegador.
+No se pudo efectuar la inspección visual porque el navegador de pruebas
+no estaba instalado y falló su descarga.
+
+PRUEBA EN TU LAPTOP
+1. Abre el juego con calidad Baja y comprueba que el terreno sea visible.
+2. Camina hasta una caja verde y pulsa E; comprueba el bloqueo al responder.
+3. Responde y comprueba los puntos; abre una roja y revisa la mochila.
+4. Recorre el desierto, prueba colisiones, salto, límites y pausa.
+5. Observa los FPS mientras te mueves. Compártelos junto con el modelo exacto
+   de procesador y gráficos antes de decidir aumentar detalle o distancia.
+El rendimiento de la laptop y de 30 jugadores aún NO está validado.
