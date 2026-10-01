@@ -18,7 +18,15 @@
 
             <p id="limitePreguntas" class="limite-preguntas" role="status" aria-live="polite"></p>
 
-            <form id="formPregunta" class="formulario">
+            <div class="contenido-preguntas">
+                <section class="seccion-preguntas" aria-labelledby="tituloPreguntas">
+                    <h2 id="tituloPreguntas">Preguntas agregadas</h2>
+                    <p id="sinPreguntas" class="sin-preguntas">Todavía no has agregado preguntas.</p>
+                    <ol id="listaPreguntas" class="lista-preguntas"></ol>
+                    <button id="btnVolver" class="btn btn-volver" type="button">Volver a configuración</button>
+                </section>
+
+                <form id="formPregunta" class="formulario">
                 <div class="campo">
                     <label for="textoPregunta">Pregunta</label>
                     <textarea id="textoPregunta" rows="3" maxlength="500"
@@ -72,15 +80,9 @@
                 <p id="mensaje" class="mensaje" aria-live="polite"></p>
 
                 <button class="btn btn-guardar" type="submit">Agregar pregunta</button>
-            </form>
+                </form>
+            </div>
 
-            <section class="seccion-preguntas" aria-labelledby="tituloPreguntas">
-                <h2 id="tituloPreguntas">Preguntas agregadas</h2>
-                <p id="sinPreguntas" class="sin-preguntas">Todavía no has agregado preguntas.</p>
-                <ol id="listaPreguntas" class="lista-preguntas"></ol>
-            </section>
-
-            <button id="btnVolver" class="btn btn-volver" type="button">Volver a configuración</button>
         </section>
     </main>
 

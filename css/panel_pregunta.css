@@ -6,7 +6,7 @@
 
 body {
     min-height: 100vh;
-    padding: 30px 20px;
+    padding: 24px;
     background: #f2f4f7;
     font-family: Arial, sans-serif;
 }
@@ -17,12 +17,17 @@ body {
 
 .panel {
     width: 100%;
-    max-width: 760px;
+    max-width: 1400px;
+    height: calc(100vh - 48px);
+    min-height: 600px;
     margin: 0 auto;
     padding: 35px;
     background: white;
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 h1 {
@@ -38,7 +43,7 @@ h1 {
 }
 
 .limite-preguntas {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
     color: #555;
     font-weight: bold;
     text-align: center;
@@ -48,7 +53,34 @@ h1 {
 .campo {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+}
+
+.contenido-preguntas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    flex: 1;
+    min-height: 0;
+}
+
+.formulario {
+    min-width: 0;
+    min-height: 0;
+    grid-column: 1;
+    grid-row: 1;
+    margin-right: 24px;
+    padding: 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+.seccion-preguntas {
+    grid-column: 2;
+    grid-row: 1;
+    border-left: 1px solid #d5d9de;
+    padding-left: 24px;
 }
 
 .campo > label,
@@ -79,9 +111,9 @@ textarea:focus,
 .alternativas {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin-top: 10px;
-    padding: 18px;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 14px;
     border: 1px solid #ddd;
     border-radius: 10px;
 }
@@ -92,13 +124,13 @@ textarea:focus,
 
 .alternativa {
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px 14px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
     align-items: center;
 }
 
 .alternativa > label:first-child {
-    grid-column: 1 / -1;
+    white-space: nowrap;
 }
 
 .selector-correcta {
@@ -146,7 +178,10 @@ textarea:focus,
 }
 
 .seccion-preguntas {
-    margin-top: 35px;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
 .seccion-preguntas h2 {
@@ -206,12 +241,43 @@ textarea:focus,
 
 .btn-volver {
     margin-top: 25px;
+    margin-bottom: 4px;
     background: #eee;
     color: #333;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
+    body {
+        padding: 16px;
+    }
+
     .panel {
+        height: auto;
+        min-height: calc(100vh - 32px);
         padding: 25px 20px;
+    }
+
+    .contenido-preguntas {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        flex: initial;
+    }
+
+    .seccion-preguntas {
+        grid-column: auto;
+        grid-row: auto;
+        max-height: 45vh;
+        order: 2;
+        border-left: 0;
+        border-right: 0;
+        padding-left: 0;
+        padding-right: 10px;
+    }
+
+    .formulario {
+        grid-column: auto;
+        grid-row: auto;
+        order: 1;
+        margin-right: 0;
     }
 }
