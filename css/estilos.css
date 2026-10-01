@@ -71,22 +71,57 @@ select:focus {
     width: 100%;
     padding: 13px;
     margin-top: 10px;
-    border: none;
-    border-radius: 8px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-family: "Segoe UI", Arial, sans-serif;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     cursor: pointer;
+    transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
 }
+
+.btn:focus-visible {
+    outline: 3px solid #f0bd3f;
+    outline-offset: 3px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 6px 14px rgba(13, 35, 48, 0.24);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* ===============================
+   BOTÓN JUGAR
+================================ */
 
 .btn-jugar {
     margin-top: 25px;
+    background: linear-gradient(180deg, #55c96a, #278545);
+    color: white;
 }
+
+
+/* ===============================
+   BOTÓN PANEL DOCENTE
+================================ */
 
 .btn-docente {
-    background: transparent;
-    border: 1px solid #ccc;
+    background: linear-gradient(180deg, #398db7, #236686);
+    color: white;
 }
 
+
+/* ===============================
+   BOTÓN SALIR
+================================ */
+
 .btn-salir {
-    background: #eee;
+    background: linear-gradient(180deg, #e7655d, #ae3935);
+    color: white;
 }
