@@ -7,16 +7,22 @@
     <title>FreeSIMON</title>
 
     <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/tema_bloques.css">
+    <link rel="stylesheet" href="data/personaje.css">
 </head>
 
-<body>
+<body class="pantalla-inicio">
 
     <main class="contenedor">
 
-        <section class="tarjeta">
+        <section class="tarjeta tarjeta-inicio">
 
-            <h1>FreeSIMON</h1>
-            <p class="subtitulo">Ingresa tus datos para comenzar</p>
+            <div class="portada-marca">
+                <h1><span class="marca-free">Free</span><span class="marca-simon">SIMON</span></h1>
+                <p class="subtitulo">Ingresa tus datos para comenzar</p>
+                <p class="lema">JUEGA · APRENDE · AVANZA</p>
+                <div id="personajePortada" class="personaje-portada" aria-hidden="true"></div>
+            </div>
 
             <div class="formulario">
 
@@ -62,6 +68,7 @@
     </main>
 
     <script src="js/principal.js"></script>
+    <script src="data/personaje.js"></script>
 
 </body>
 
