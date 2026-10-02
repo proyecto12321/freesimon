@@ -9,6 +9,7 @@
     <title>Desierto · Escenario de prueba</title>
 
     <link rel="stylesheet" href="escenario.css">
+    <link rel="stylesheet" href="../css/temporizador_juego.css">
 
 </head>
 
@@ -65,6 +66,7 @@
         <small>
             <b class="green">■</b> Preguntas
             <b class="red">■</b> Equipamiento
+            <b style="color:#fff;text-shadow:0 0 2px #243746">●</b> Botiquín
         </small>
 
     </aside>
@@ -102,6 +104,15 @@
     <div id="hint" hidden></div>
 
     <div id="toast" role="status" hidden>
+    </div>
+
+    <div id="temporizadorJuego" role="timer" aria-label="Tiempo restante" hidden>
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="tiempo-circulo-fondo" cx="50" cy="50" r="46"></circle>
+            <circle id="progresoTiempo" cx="50" cy="50" r="46"></circle>
+        </svg>
+        <span class="tiempo-etiqueta">TIEMPO</span>
+        <strong id="textoTiempo">30:00</strong>
     </div>
 
 
@@ -205,6 +216,11 @@
                 <span>
                     <kbd>T</kbd>
                     Cambiar clima
+                </span>
+
+                <span>
+                    <kbd>R</kbd>
+                    Recibir daño
                 </span>
 
             </div>
@@ -336,17 +352,20 @@
     <!-- Sistema de personajes -->
     <script src="personaje.js?v=personaje-3d-fix3"></script>
 
-    <!-- Renderizador / integración 3D del personaje -->
-    <script src="personajeD.js?v=personaje-3d-fix3"></script>
-
     <!-- Vida: debe cargarse antes del motor del escenario -->
-    <script src="vida_jugador.js?v=vidas-detras-menu"></script>
+    <script src="vida_jugador_completo.js?v=1"></script>
+
+    <!-- Renderizador 3D y equipo del personaje -->
+    <script src="personajeD_completo.js?v=1"></script>
 
     <!-- Cajas de curación compartidas -->
     <script src="botiquin_jugador.js?v=botiquines-v1"></script>
 
+    <!-- Temporizador de evaluación -->
+    <script src="../js/temporizador_juego.js?v=temporizador-v1"></script>
+
     <!-- Motor del escenario -->
-    <script src="escenario.js?v=botiquines-v1"></script>
+    <script src="escenario.js?v=equipo-completo-1"></script>
 </body>
 
 </html>

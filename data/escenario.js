@@ -98,18 +98,6 @@
     }
   });// fin de la implementacion
 
-  // =====================================================
-  // PRUEBA TEMPORAL: H QUITA UN CORAZÓN
-  // Eliminar este bloque cuando conectemos los ataques.
-  // =====================================================
-
-  window.addEventListener("keydown", evento => {
-    // Ignorar la repetición automática al mantener H presionada.
-    if (evento.code !== "KeyH" || evento.repeat) return;
-
-    VidaJugador.recibirGolpe();
-  });
-
   let previous = 0, fpsStart = 0, frames = 0, lastUI = 0, toastTimer, drag = false;
   function ground(x, z) {
     const cx = Math.floor(x / tile) * tile + tile / 2, cz = Math.floor(z / tile) * tile + tile / 2;
@@ -341,11 +329,11 @@ uniform mediump float distanceMax;
     if (phase !== weatherPhase) { weatherPhase = phase; if (phase === 'warning') notify('El viento aumenta. Tormenta de arena en ' + climate.aviso + ' segundos.'); }
     $('weatherName').textContent = storm > .65 ? 'Tormenta de arena' : storm > .04 ? (target > storm ? 'Viento en aumento' : 'El cielo se despeja') : phase === 'warning' ? 'Tormenta en camino' : 'Cielo despejado';
     $('weatherIcon').textContent = storm > .1 ? '≋' : '☀'; $('weatherBadge').classList.toggle('storm', storm > .25);
-    $('weatherHelp').textContent = storm > .1 ? 'Visibilidad reducida · T cambia clima' : 'T · cambiar clima';
+    $('weatherHelp').textContent = storm > .1 ? 'Visibilidad reducida · T clima · R daño' : 'T · clima · R · daño';
   }
   function notify(message) { $('toast').textContent = message; $('toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').hidden = true, 3500); }
   function release() { if (document.pointerLockElement === canvas) document.exitPointerLock(); keys.clear(); drag = false; }
-  function resume() { if ($('quiz').open) return; active = true; $('overlay').hidden = true; previous = performance.now(); try { const req = canvas.requestPointerLock(); if (req && req.catch) req.catch(() => notify('Arrastra con el ratón o usa las flechas para mirar.')); } catch { notify('Arrastra con el ratón para mirar.'); }; if (VidaJugador.estaMuerto()) return; }
+  function resume() { if (VidaJugador.estaMuerto() || $('quiz').open) return; TemporizadorJuego.iniciar(); active = true; $('overlay').hidden = true; previous = performance.now(); try { const req = canvas.requestPointerLock(); if (req && req.catch) req.catch(() => notify('Arrastra con el ratón o usa las flechas para mirar.')); } catch { notify('Arrastra con el ratón para mirar.'); } }
   function pause() { active = false; $('overlay').hidden = false; $('play').firstChild.textContent = 'Continuar exploración '; $('hint').hidden = true; release(); }
   $('play').onclick = resume; $('menuBtn').onclick = pause;
   $('returnRooms').onclick = () => { release(); window.location.href = '../html/panel_sala.html'; };
@@ -364,11 +352,7 @@ uniform mediump float distanceMax;
     const caja = nearest;
 
     if (caja.tipo === 'equipo') {
-      caja.opened = true;
-      inventory.push(caja.objeto);
-      $('inventory').textContent = inventory.join(' · ');
-      notify('Recogiste: ' + caja.objeto + ' · demostración sin combate');
-      emit('escenario:equipo', { id: caja.id, objeto: caja.objeto });
+      equipoJugador.recoger(caja);
       return;
     }
 
@@ -448,13 +432,39 @@ uniform mediump float distanceMax;
     map.strokeStyle = '#ac8e62'; map.lineWidth = .5; for (let i = 0; i <= 160; i += 20) { map.beginPath(); map.moveTo(i, 0); map.lineTo(i, 160); map.moveTo(0, i); map.lineTo(160, i); map.stroke(); }
     map.fillStyle = '#798050'; for (const o of obstacles) { map.fillRect(mx(o.x) - .6, mx(o.z) - .6, 1.2, 1.2); }
     for (const b of boxes) { map.fillStyle = b.opened ? '#756b56' : b.tipo === 'pregunta' ? '#178b4f' : '#c3362e'; map.fillRect(mx(b.x) - 2.5, mx(b.z) - 2.5, 5, 5); }
+    botiquines.dibujarEnMinimapa(map, mx);
     map.save(); map.translate(mx(player.x), mx(player.z)); map.rotate(-player.yaw); map.fillStyle = '#fff'; map.strokeStyle = '#26372f'; map.lineWidth = 1.5; map.beginPath(); map.moveTo(0, -7); map.lineTo(4, 5); map.lineTo(0, 3); map.lineTo(-4, 5); map.closePath(); map.fill(); map.stroke(); map.restore();
     $('coords').textContent = Math.round(player.x) + ' / ' + Math.round(player.z);
   }
 
   //integracion del personaje en el escenario
   // Crear una sola instancia para toda la partida.
+  const equipoJugador = new EquipoJugador({
+    inventario: inventory,
+    avisar: notify,
+    puedeUsar: () => active && !player.protected && !VidaJugador.estaMuerto(),
+    puedeRecibirDano: () => active && !player.protected && !VidaJugador.estaMuerto()
+  });
+
+  window.addEventListener('keydown', evento => {
+    if (!active || player.protected || VidaJugador.estaMuerto()) return;
+    if (evento.code === 'KeyR') {
+      evento.preventDefault();
+      if (!evento.repeat) equipoJugador.recibirDano(1);
+      return;
+    }
+    equipoJugador.manejarTecla(evento);
+  });
+
+  canvas.addEventListener('mousedown', evento => {
+    if (evento.button === 0 && document.pointerLockElement === canvas &&
+        active && !player.protected && !VidaJugador.estaMuerto()) {
+      equipoJugador.usarArma();
+    }
+  });
+
   const terceraPersona = new PersonajeTerceraPersona(gl, {
+    equipo: equipoJugador,
     distancia: 8, // Aumenta a 10 si quieres verlo más alejado.
     altura: 1.85,
 
@@ -481,6 +491,7 @@ uniform mediump float distanceMax;
   function render(time) {
     const dt = Math.min(.04, (time - previous) / 1000 || 0); previous = time;
     if (active) { update(dt); updateWeather(dt); }
+    equipoJugador.actualizar(dt);
 
     //integración del personaje en escenario
     // En este desierto, player.y representa la altura de los ojos.

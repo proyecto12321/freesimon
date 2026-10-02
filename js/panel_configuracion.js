@@ -46,6 +46,27 @@ const listaEscenarios =
 const estadoEscenario =
     document.getElementById("estadoEscenario");
 
+const tiempoEvaluacion =
+    document.getElementById("tiempoEvaluacion");
+
+const DURACIONES_EVALUACION = new Set(["30", "45", "60"]);
+
+const tiempoEvaluacionGuardado =
+    sessionStorage.getItem("tiempoEvaluacionMinutos");
+
+tiempoEvaluacion.value = DURACIONES_EVALUACION.has(tiempoEvaluacionGuardado)
+    ? tiempoEvaluacionGuardado
+    : "30";
+sessionStorage.setItem("tiempoEvaluacionMinutos", tiempoEvaluacion.value);
+
+tiempoEvaluacion.addEventListener("change", () => {
+    if (!DURACIONES_EVALUACION.has(tiempoEvaluacion.value)) {
+        tiempoEvaluacion.value = "30";
+    }
+
+    sessionStorage.setItem("tiempoEvaluacionMinutos", tiempoEvaluacion.value);
+});
+
 const escenarios = [
     { id: "bosque", nombre: "Bosque Encantado", imagen: "../img/bosque.png" },
     { id: "desierto", nombre: "Desierto tormentoso", imagen: "../img/desierto.png" },
@@ -281,6 +302,7 @@ btnCargarJuego.addEventListener("click", () => {
             nombre: escenario.nombre,
             imagen: escenario.imagen.replace("../", "")
         },
+        tiempoEvaluacionMinutos: Number(tiempoEvaluacion.value),
         cantidadPreguntas: Number(
             sessionStorage.getItem("cantidadPreguntas") || preguntas.length
         ),
@@ -295,6 +317,8 @@ btnCargarJuego.addEventListener("click", () => {
     sessionStorage.setItem("juegoEscenario", escenario.id);
     sessionStorage.setItem("juegoPreguntas", JSON.stringify(preguntas));
     sessionStorage.setItem("juegoGrupos", JSON.stringify(grupos));
+    sessionStorage.setItem("tiempoEvaluacionMinutos", tiempoEvaluacion.value);
+    sessionStorage.removeItem("juegoTiempoFin");
 
     window.location.href = "../index.html";
 });

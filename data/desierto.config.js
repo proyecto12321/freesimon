@@ -20,14 +20,35 @@ window.DESIERTO_CONFIG = {
   tiempoPregunta: 30,
   cajas: [
     { id: 'verde-1', tipo: 'pregunta', x: -3, z: 2 },
-    { id: 'roja-1', tipo: 'equipo', x: 3, z: 2, objeto: 'Arco' },
+
+    {
+      id: "roja-1",
+      tipo: "equipo",
+      x: 3,
+      z: 2,
+      objeto: "Arco",
+      botiquines: 2,
+      escudos: 2
+    },
     { id: 'verde-2', tipo: 'pregunta', x: 17, z: -19 },
-    { id: 'roja-2', tipo: 'equipo', x: -20, z: -15, objeto: 'Hacha' },
+    {
+      id: 'roja-2', tipo: 'equipo', x: -20, z: -15, objeto: 'Hacha', botiquines: 2,
+      escudos: 2
+    },
     { id: 'verde-3', tipo: 'pregunta', x: -35, z: -39 },
-    { id: 'roja-3', tipo: 'equipo', x: 40, z: -46, objeto: 'Espada' },
+    {
+      id: 'roja-3', tipo: 'equipo', x: 40, z: -46, objeto: 'Espada', botiquines: 2,
+      escudos: 2
+    },
     { id: 'verde-4', tipo: 'pregunta', x: 50, z: 30 },
-    { id: 'roja-4', tipo: 'equipo', x: -48, z: 42, objeto: 'Pistola' },
+    {
+      id: 'roja-4', tipo: 'equipo', x: -48, z: 42, objeto: 'Pistola',
+      botiquines: 2, escudos: 2
+    },
     { id: 'verde-5', tipo: 'pregunta', x: 75, z: -75 },
-    { id: 'roja-5', tipo: 'equipo', x: -70, z: -65, objeto: 'Metralleta' }
+    {
+      id: 'roja-5', tipo: 'equipo', x: -70, z: -65, objeto: 'Metralleta', botiquines: 2,
+      escudos: 2
+    }
   ]
 };

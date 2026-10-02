@@ -79,6 +79,11 @@ function restaurarConfiguracionJuego() {
     if (Array.isArray(gruposConfigurados)) {
         sessionStorage.setItem("juegoGrupos", JSON.stringify(gruposConfigurados));
     }
+
+    const duracion = String(configuracionJuego?.tiempoEvaluacionMinutos ?? "");
+    if (["30", "45", "60"].includes(duracion)) {
+        sessionStorage.setItem("tiempoEvaluacionMinutos", duracion);
+    }
 }
 
 restaurarConfiguracionJuego();

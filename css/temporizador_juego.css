@@ -1,0 +1,82 @@
+#temporizadorJuego {
+    position: fixed;
+    z-index: 1002;
+    top: 18px;
+    left: 50%;
+    display: flex;
+    width: 78px;
+    height: 78px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: #1d332de8;
+    color: #fff;
+    font-family: "Segoe UI", Arial, sans-serif;
+    pointer-events: none;
+    box-shadow: 0 3px 14px #0005;
+}
+
+#temporizadorJuego[hidden] {
+    display: none;
+}
+
+#temporizadorJuego svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+#temporizadorJuego circle {
+    fill: none;
+    stroke-width: 4;
+}
+
+#temporizadorJuego .tiempo-circulo-fondo {
+    stroke: #ffffff35;
+}
+
+#progresoTiempo {
+    stroke: #8be5ab;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.25s linear, stroke 0.25s;
+}
+
+#temporizadorJuego .tiempo-etiqueta,
+#textoTiempo {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 3px #000;
+}
+
+#temporizadorJuego .tiempo-etiqueta {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+#textoTiempo {
+    font-size: 17px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+#temporizadorJuego.por-agotarse #progresoTiempo {
+    stroke: #ff766b;
+}
+
+@media (max-width: 650px) {
+    #temporizadorJuego {
+        top: 10px;
+        width: 66px;
+        height: 66px;
+    }
+
+    #textoTiempo {
+        font-size: 15px;
+    }
+}

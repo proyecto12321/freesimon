@@ -181,6 +181,44 @@ body {
     gap: 15px;
 }
 
+.selector-tiempo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+.selector-tiempo strong,
+.selector-tiempo small {
+    display: block;
+}
+
+.selector-tiempo strong {
+    margin-bottom: 6px;
+    color: #263445;
+    font-size: 16px;
+}
+
+.selector-tiempo small {
+    color: #777;
+    font-size: 13px;
+}
+
+.selector-tiempo select {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+    border: 1px solid #cbd2db;
+    border-radius: 8px;
+    background: #fff;
+    color: #263445;
+    font: inherit;
+}
+
 .opcion {
     width: 100%;
 

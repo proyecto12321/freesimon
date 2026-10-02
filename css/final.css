@@ -1,0 +1,43 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px;
+    place-items: center;
+    background: linear-gradient(145deg, #e8f1ed, #cbded5);
+    color: #20352b;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.final-card {
+    width: min(100%, 680px);
+    padding: clamp(32px, 7vw, 64px);
+    border: 1px solid #ffffff;
+    border-radius: 24px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 24px 70px #25443324;
+}
+
+.final-icon {
+    display: grid;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 24px;
+    place-items: center;
+    border-radius: 50%;
+    background: #e3f3e9;
+    color: #39765c;
+    font-size: 38px;
+    font-weight: 700;
+}
+
+.final-card h1 {
+    margin: 0;
+    font-size: clamp(26px, 5vw, 42px);
+    line-height: 1.2;
+}

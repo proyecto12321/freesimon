@@ -76,10 +76,6 @@ VidaJugador.configurar({
  }
 });
 
-window.addEventListener('keydown',event=>{
- if(event.code!=='KeyH'||event.repeat)return;
- VidaJugador.recibirGolpe();
-});
 let previous=0,fpsStart=0,frames=0,lastUI=0,toastTimer,drag=false;
 let checkpoint={x:config.inicio.x,z:config.inicio.z,y:24},falls=0,currentIsland='inicio';
 function surfaceAt(x,z,limit=Infinity){
@@ -301,7 +297,7 @@ addEventListener('resize',resize);resize();
 $('quality').onchange=()=>{qualityName=$('quality').value;quality=presets[qualityName];$('qualityLabel').textContent='Calidad '+({low:'baja',medium:'media',high:'alta'}[$('quality').value]);resize();};
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,3500);}
 function release(){if(document.pointerLockElement===canvas)document.exitPointerLock();keys.clear();drag=false;}
-function resume(){if($('quiz').open||VidaJugador.estaMuerto())return;active=true;$('overlay').hidden=true;previous=performance.now();try{const req=canvas.requestPointerLock();if(req&&req.catch)req.catch(()=>notify('Arrastra con el ratón o usa las flechas para mirar.'));}catch{notify('Arrastra con el ratón para mirar.');}}
+function resume(){if($('quiz').open||VidaJugador.estaMuerto())return;TemporizadorJuego.iniciar();active=true;$('overlay').hidden=true;previous=performance.now();try{const req=canvas.requestPointerLock();if(req&&req.catch)req.catch(()=>notify('Arrastra con el ratón o usa las flechas para mirar.'));}catch{notify('Arrastra con el ratón para mirar.');}}
 function pause(){active=false;$('overlay').hidden=false;$('play').firstChild.textContent='Continuar exploración ';$('hint').hidden=true;release();}
 $('play').onclick=resume;$('menuBtn').onclick=pause;
 $('returnRooms').onclick=()=>{release();window.location.href='../html/panel_sala.html';};
@@ -311,7 +307,7 @@ addEventListener('mousemove',e=>{if(!active||$('quiz').open)return;if(document.p
 addEventListener('blur',()=>{keys.clear();if(active)pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&active)pause();});
 const movement=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight'];
-addEventListener('keydown',e=>{if(!active||$('quiz').open)return;if(movement.includes(e.code))e.preventDefault();keys.add(e.code);if(e.code==='Escape'){pause();}if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='KeyR'&&!e.repeat)respawn(false);if(e.code==='Space'&&!e.repeat&&player.grounded){player.vy=7.5;player.grounded=false;}});
+addEventListener('keydown',e=>{if(!active||$('quiz').open)return;if(movement.includes(e.code))e.preventDefault();keys.add(e.code);if(e.code==='Escape'){pause();}if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='KeyR'&&!e.repeat)VidaJugador.recibirGolpe();if(e.code==='KeyV'&&!e.repeat)respawn(false);if(e.code==='Space'&&!e.repeat&&player.grounded){player.vy=7.5;player.grounded=false;}});
 addEventListener('keyup',e=>keys.delete(e.code));
 function allowed(x,z){
  if(Math.abs(x)>87||Math.abs(z)>87)return false;
@@ -366,6 +362,7 @@ const map=$('mapa').getContext('2d');
 function minimap(){map.fillStyle=BIOME==='inframundo'?'#823e20':BIOME==='bosque'?'#40859a':'#364252';map.fillRect(0,0,160,160);const mx=x=>(x/config.tamano+.5)*160;
  for(const p of surfaces){if(p.type==='bridge')continue;map.fillStyle=BIOME==='bosque'?(p.y>3?'#cab892':'#62834b'):BIOME==='ciudad'?(p.y>3?'#b4a385':'#8a969c'):'#68616a';map.fillRect(mx(p.x-p.w/2),mx(p.z-p.d/2),Math.max(1,p.w/config.tamano*160),Math.max(1,p.d/config.tamano*160));}
  for(const b of boxes){map.fillStyle=b.opened?'#626367':b.tipo==='pregunta'?'#4eff83':'#ff7661';map.fillRect(mx(b.x)-1.8,mx(b.z)-1.8,3.6,3.6);}
+ botiquines.dibujarEnMinimapa(map,mx);
  for(const cp of config.islas){map.strokeStyle='#ffed9c';map.strokeRect(mx(cp.x)-2.5,mx(cp.z)-2.5,5,5);}
  map.save();map.translate(mx(player.x),mx(player.z));map.rotate(-player.yaw);map.fillStyle='#fff';map.beginPath();map.moveTo(0,-5);map.lineTo(3,4);map.lineTo(-3,4);map.closePath();map.fill();map.restore();$('coords').textContent=Math.round(player.x)+' / '+Math.round(player.z);
  $('objective').textContent=boxes.filter(b=>b.tipo==='pregunta'&&b.opened).length+' / '+boxes.filter(b=>b.tipo==='pregunta').length+' preguntas';

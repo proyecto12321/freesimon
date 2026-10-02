@@ -9,7 +9,7 @@
 
     <title>Panel de administración docente - FreeSIMON</title>
 
-    <link rel="stylesheet" href="../css/panel_configuracion.css?v=diseno">
+    <link rel="stylesheet" href="../css/panel_configuracion.css?v=temporizador-evaluacion">
     <link rel="stylesheet" href="../css/tema_bloques.css">
 
 </head>
@@ -36,6 +36,17 @@
 
                 <div class="opciones">
 
+                    <label class="selector-tiempo" for="tiempoEvaluacion">
+                        <span>
+                            <strong>Tiempo de evaluación</strong>
+                            <small>Elige la duración de la partida.</small>
+                        </span>
+                        <select id="tiempoEvaluacion" name="tiempoEvaluacion">
+                            <option value="30">30 minutos</option>
+                            <option value="45">45 minutos</option>
+                            <option value="60">60 minutos</option>
+                        </select>
+                    </label>
 
                     <!-- CANTIDAD DE PREGUNTAS -->
 
@@ -170,7 +181,7 @@
         </aside>
     </div>
 
-    <script src="../js/panel_configuracion.js?v=retorno-index-corregido"></script>
+    <script src="../js/panel_configuracion.js?v=temporizador-evaluacion"></script>
 
 </body>
 

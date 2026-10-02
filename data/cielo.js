@@ -76,10 +76,6 @@ VidaJugador.configurar({
  }
 });
 
-window.addEventListener('keydown',event=>{
- if(event.code!=='KeyH'||event.repeat)return;
- VidaJugador.recibirGolpe();
-});
 let previous=0,fpsStart=0,frames=0,lastUI=0,toastTimer,drag=false;
 let checkpoint={x:config.inicio.x,z:config.inicio.z,y:24},falls=0,currentIsland='inicio';
 function surfaceAt(x,z){
@@ -341,7 +337,7 @@ addEventListener('resize',resize);resize();
 $('quality').onchange=()=>{qualityName=$('quality').value;quality=presets[qualityName];$('qualityLabel').textContent='Calidad '+({low:'baja',medium:'media',high:'alta'}[$('quality').value]);resize();};
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,3500);}
 function release(){if(document.pointerLockElement===canvas)document.exitPointerLock();keys.clear();drag=false;}
-function resume(){if($('quiz').open||VidaJugador.estaMuerto())return;active=true;$('overlay').hidden=true;previous=performance.now();try{const req=canvas.requestPointerLock();if(req&&req.catch)req.catch(()=>notify('Arrastra con el ratón o usa las flechas para mirar.'));}catch{notify('Arrastra con el ratón para mirar.');}}
+function resume(){if($('quiz').open||VidaJugador.estaMuerto())return;TemporizadorJuego.iniciar();active=true;$('overlay').hidden=true;previous=performance.now();try{const req=canvas.requestPointerLock();if(req&&req.catch)req.catch(()=>notify('Arrastra con el ratón o usa las flechas para mirar.'));}catch{notify('Arrastra con el ratón para mirar.');}}
 function pause(){active=false;$('overlay').hidden=false;$('play').firstChild.textContent='Continuar exploración ';$('hint').hidden=true;release();}
 $('play').onclick=resume;$('menuBtn').onclick=pause;
 $('returnRooms').onclick=()=>{release();window.location.href='../html/panel_sala.html';};
@@ -351,7 +347,7 @@ addEventListener('mousemove',e=>{if(!active||$('quiz').open)return;if(document.p
 addEventListener('blur',()=>{keys.clear();if(active)pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&active)pause();});
 const movement=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight'];
-addEventListener('keydown',e=>{if(!active||$('quiz').open)return;if(movement.includes(e.code))e.preventDefault();keys.add(e.code);if(e.code==='Escape'){pause();}if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='KeyR'&&!e.repeat)respawn(false);if(e.code==='Space'&&!e.repeat&&player.grounded){player.vy=7.5;player.grounded=false;}});
+addEventListener('keydown',e=>{if(!active||$('quiz').open)return;if(movement.includes(e.code))e.preventDefault();keys.add(e.code);if(e.code==='Escape'){pause();}if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='KeyR'&&!e.repeat)VidaJugador.recibirGolpe();if(e.code==='KeyV'&&!e.repeat)respawn(false);if(e.code==='Space'&&!e.repeat&&player.grounded){player.vy=7.5;player.grounded=false;}});
 addEventListener('keyup',e=>keys.delete(e.code));
 function allowed(x,z){
  const floor=surfaceAt(x,z);
@@ -416,6 +412,7 @@ function minimap(){map.fillStyle='#9ed3ed';map.fillRect(0,0,160,160);const mx=x=
  for(const p of config.saltos){map.fillStyle='#8fb953';map.fillRect(mx(p.x)-1,mx(p.z)-1,2,2);}
  for(const island of config.islas){map.fillStyle=island.id===currentIsland?'#8bbe57':'#659851';map.beginPath();map.ellipse(mx(island.x),mx(island.z),island.rx/config.tamano*160,island.rz/config.tamano*160,0,0,Math.PI*2);map.fill();}
  for(const b of boxes){map.fillStyle=b.opened?'#5d7b81':b.tipo==='pregunta'?'#20bd69':'#d74736';map.fillRect(mx(b.x)-2,mx(b.z)-2,4,4);}
+ botiquines.dibujarEnMinimapa(map,mx);
  map.save();map.translate(mx(player.x),mx(player.z));map.rotate(-player.yaw);map.fillStyle='#fff';map.strokeStyle='#24445a';map.lineWidth=1.5;map.beginPath();map.moveTo(0,-6);map.lineTo(4,4);map.lineTo(0,2);map.lineTo(-4,4);map.closePath();map.fill();map.stroke();map.restore();
  $('coords').textContent=Math.round(player.x)+' / '+Math.round(player.z);
 }
