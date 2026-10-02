@@ -1,0 +1,88 @@
+FREESIMON · BOSQUE, CIUDAD E INFRAMUNDO · V1
+
+INSTALACIÓN
+Extrae los 12 archivos de código del ZIP juntos dentro de data.
+Abre bosque.html, ciudad.html o inframundo.html para probarlos.
+Cada escenario usa su propio HTML, CSS, JS y archivo .config.js.
+No reemplazan el desierto, cielo ni mar. No requieren internet ni bibliotecas.
+
+ACTIVARLOS EN TU PANEL
+Dentro del listener de btnIniciarJuego en js/panel_sala.js, reemplaza solo
+el objeto const rutas por:
+
+const rutas = {
+    bosque: "../data/bosque.html",
+    desierto: "../data/escenario.html",
+    cielo: "../data/cielo.html",
+    ciudad: "../data/ciudad.html",
+    inframundo: "../data/inframundo.html",
+    mar: "../data/mar.html"
+};
+
+Conserva las validaciones y window.location.href = rutas[escenarioId].
+No agregues un segundo listener ni dupliques la variable rutas.
+
+CONTROLES COMUNES
+W/A/S/D: caminar. Ratón: mirar. Flechas o arrastrar: alternativa al ratón.
+Shift: correr. Espacio: saltar. Shift + Espacio: saltos largos con carrera.
+E: abrir el cofre más cercano. R: volver al último punto seguro.
+Esc: pausa y calidad gráfica. Media y Alta muestran detalles decorativos.
+
+DIFICULTAD Y RECORRIDOS
+BOSQUE
+- Bosque denso con flores, un río y ruinas.
+- Laberinto de vegetación con puertas alternas y cofres en sus corredores.
+- Dos puentes estrechos y un atajo de piedras separadas sobre el río.
+- Ruinas elevadas con escalinata y ruta de saltos hacia un cofre lateral.
+- Puntos seguros: claro inicial, ribera norte y ruinas elevadas.
+- Caer al río devuelve al último punto seguro. No hay natación.
+
+CIUDAD
+- Barrio con edificios, ventanas, puertas decorativas y calles señalizadas.
+- Tres azoteas principales accesibles por escaleras exteriores.
+- Pasarelas estrechas sobre la calle; se puede caminar por debajo.
+- Ruta opcional de saltos desde la azotea del mercado a un cofre de equipo.
+- Obstáculos de obra y cofres en patios y zonas periféricas.
+- Las caídas fuertes desde azoteas devuelven al último punto seguro.
+- Los edificios son sólidos: no hay interiores accesibles en esta versión.
+
+INFRAMUNDO
+- Plataformas de basalto y pasarelas estrechas rodeadas de lava animada.
+- Primera secuencia de saltos diagonales; usa carrera antes de saltar.
+- Ruta larga estrecha al refugio y atajo de saltos.
+- Fortaleza, altar elevado y cofre lateral alcanzable por plataformas.
+- Tres géiseres periódicos: 3 segundos activos y 4 apagados, con fases distintas.
+- Las columnas naranjas muestran los géiseres activos. Espera a que desaparezcan.
+- Tocar un géiser activo o caer en lava devuelve al último punto seguro.
+
+COFRES Y PROGRESO
+Cada mapa incluye 8 cofres verdes y 4 rojos. Las preguntas son ejemplos
+editables en el correspondiente .config.js. Un intento por pregunta,
+30 segundos para responder y 100 puntos por acierto.
+Mientras respondes se bloquea el movimiento y se activa el escudo lógico.
+Los cofres quedan abiertos. Los rojos entregan objetos al inventario;
+aún no hay ataques, enemigos, disparos ni combate.
+Caer o pulsar R conserva puntos y objetos. Recargar el HTML reinicia la prueba.
+El contador de preguntas indica intentos consumidos, no solo aciertos.
+
+INTEGRACIÓN Y ALCANCE
+Son pruebas independientes de un jugador. Abrirlas desde panel_sala permite
+seleccionar el mapa, pero todavía no importa las preguntas, los grupos ni el
+personaje configurados por el docente. Tampoco hay servidor multijugador.
+Las API son EscenarioBosque, EscenarioCiudad y EscenarioInframundo:
+getState(), pause(), resume(), returnToCheckpoint() y reset().
+Los eventos escenario:respuesta, escenario:equipo, escenario:proteccion y
+escenario:reaparicion están disponibles para la integración posterior.
+La protección, puntos y acciones deberán validarse en el servidor futuro.
+
+VERIFICACIÓN
+Sintaxis JavaScript, acceso a los 36 cofres, preguntas, inventario, protección,
+laberinto, puentes, escalinatas, rutas de salto, caídas fuertes y géiseres
+comprobados mediante pruebas de lógica con controles simulados.
+Los shaders se compilaron y enlazaron en un contexto EGL / OpenGL ES.
+Se reprodujeron las llamadas de dibujo e inspeccionaron imágenes de los tres
+escenarios, sin errores de OpenGL. No se probó la interfaz completa en un
+navegador real ni se midieron FPS en tu laptop o con 30 jugadores.
+
+Estos mapas tienen más obstáculos y recorridos que los primeros prototipos,
+pero conservan geometría sencilla, sin iluminación dinámica costosa.

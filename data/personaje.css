@@ -69,7 +69,7 @@
     left: calc(50% + var(--x));
     width: var(--w);
     height: var(--h);
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(var(--z, 0px));
     transform-style: preserve-3d;
 }
 

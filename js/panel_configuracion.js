@@ -296,7 +296,7 @@ btnCargarJuego.addEventListener("click", () => {
     sessionStorage.setItem("juegoPreguntas", JSON.stringify(preguntas));
     sessionStorage.setItem("juegoGrupos", JSON.stringify(grupos));
 
-    window.location.href = "panel_sala.html";
+    window.location.href = "../index.html";
 });
 
 

@@ -1,13 +1,346 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Desierto · Escenario de prueba</title><link rel="stylesheet" href="escenario.css"></head>
+
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Desierto · Escenario de prueba</title>
+
+    <link rel="stylesheet" href="escenario.css">
+
+</head>
+
 <body>
-<canvas id="mundo" aria-label="Escenario desierto en primera persona"></canvas>
-<header><div class="brand"><span class="symbol">◈</span><div><small>ATLAS / DESIERTO V2</small><h1>Desierto</h1></div></div><div class="topright"><span class="tag">PRUEBA LOCAL · 1 JUGADOR</span><button id="menuBtn">Pausa / ajustes</button></div></header>
-<aside id="mapPanel"><canvas id="mapa" width="160" height="160" aria-label="Minimapa"></canvas><div class="mapcaption">N ↑ <span id="coords">0 / 0</span></div><small><b class="green">■</b> Preguntas <b class="red">■</b> Equipamiento</small></aside>
-<div id="weatherBadge"><span id="weatherIcon">☀</span><div><strong id="weatherName">Cielo despejado</strong><small id="weatherHelp">T · cambiar clima</small></div></div>
-<div id="crosshair">+</div><div id="hint" hidden></div><div id="toast" role="status" hidden></div>
-<footer><div class="stats"><span>EXPLORADOR <strong id="score">0 puntos</strong></span><span>MOCHILA <strong id="inventory">Vacía</strong></span></div><div class="performance"><span id="fps">— FPS</span><span id="qualityLabel">Calidad baja</span></div></footer>
-<div id="overlay" class="overlay"><section class="card"><span class="eyebrow">EXPEDICIÓN 01 / PROTOTIPO</span><h2>Entre dunas<br>y descubrimientos.</h2><p>Explora ruinas, cañones y dunas bajo un cielo de nubes. Encuentra los cofres y adéntrate en la tormenta de arena.</p><div class="controls"><span><kbd>W A S D</kbd> Caminar</span><span><kbd>Ratón</kbd> Mirar</span><span><kbd>E</kbd> Abrir caja</span><span><kbd>Shift</kbd> Correr</span><span><kbd>Espacio</kbd> Saltar</span><span><kbd>Esc</kbd> Pausa</span><span><kbd>T</kbd> Cambiar clima</span></div><label class="quality">Calidad gráfica <select id="quality"><option value="low">Baja · empezar aquí</option><option value="medium">Media</option><option value="high">Alta</option></select></label><label class="quality">Clima <select id="weather"><option value="auto">Automático · ciclo de tormentas</option><option value="clear">Cielo despejado</option><option value="storm">Tormenta de arena</option></select></label><button id="play" class="primary">Explorar desierto <span>→</span></button><button id="returnRooms" class="return-rooms">Volver</button><p class="note">Sin internet. Si el ratón no se captura, arrastra sobre el escenario para mirar o usa las flechas. Esta prueba aún no incluye multijugador ni combate.</p><div id="error" role="alert" hidden></div></section></div>
-<dialog id="quiz"><span class="eyebrow green">CAJA VERDE / PREGUNTA</span><h2 id="question"></h2><p id="shield">Escudo activo · sin movimiento mientras respondes</p><div id="answers"></div><p id="feedback" role="status"></p><button id="closeQuiz">Volver al desierto</button></dialog>
-<script src="desierto.config.js"></script><script src="escenario.js"></script>
-</body></html>
+
+    <!-- =========================================================
+     ESCENARIO 3D
+     ========================================================= -->
+
+    <canvas id="mundo" aria-label="Escenario desierto en primera persona">
+    </canvas>
+
+
+    <!-- =========================================================
+     CABECERA
+     ========================================================= -->
+
+    <header>
+
+        <div class="brand">
+            <span class="symbol">◈</span>
+
+            <div>
+                <small>ATLAS / DESIERTO V2</small>
+                <h1>Desierto</h1>
+            </div>
+        </div>
+
+        <div class="topright">
+            <span class="tag">PRUEBA LOCAL · 1 JUGADOR</span>
+
+            <button id="menuBtn">
+                Pausa / ajustes
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+     MINIMAPA
+     ========================================================= -->
+
+    <aside id="mapPanel">
+
+        <canvas id="mapa" width="160" height="160" aria-label="Minimapa">
+        </canvas>
+
+        <div class="mapcaption">
+            N ↑
+            <span id="coords">0 / 0</span>
+        </div>
+
+        <small>
+            <b class="green">■</b> Preguntas
+            <b class="red">■</b> Equipamiento
+        </small>
+
+    </aside>
+
+
+    <!-- =========================================================
+     CLIMA
+     ========================================================= -->
+
+    <div id="weatherBadge">
+
+        <span id="weatherIcon">☀</span>
+
+        <div>
+            <strong id="weatherName">
+                Cielo despejado
+            </strong>
+
+            <small id="weatherHelp">
+                T · cambiar clima
+            </small>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+     CONTROLES DE JUEGO
+     ========================================================= -->
+
+    <div id="crosshair">
+        +
+    </div>
+
+    <div id="hint" hidden></div>
+
+    <div id="toast" role="status" hidden>
+    </div>
+
+
+    <!-- =========================================================
+     PIE / ESTADÍSTICAS
+     ========================================================= -->
+
+    <footer>
+
+        <div class="stats">
+
+            <span>
+                EXPLORADOR
+                <strong id="score">
+                    0 puntos
+                </strong>
+            </span>
+
+            <span>
+                MOCHILA
+                <strong id="inventory">
+                    Vacía
+                </strong>
+            </span>
+
+        </div>
+
+        <div class="performance">
+
+            <span id="fps">
+                — FPS
+            </span>
+
+            <span id="qualityLabel">
+                Calidad baja
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+     PANTALLA INICIAL / PAUSA
+     ========================================================= -->
+
+    <div id="overlay" class="overlay">
+
+        <section class="card">
+
+            <span class="eyebrow">
+                EXPEDICIÓN 01 / PROTOTIPO
+            </span>
+
+            <h2>
+                Entre dunas
+                <br>
+                y descubrimientos.
+            </h2>
+
+            <p>
+                Explora ruinas, cañones y dunas bajo un cielo de nubes.
+                Encuentra los cofres y adéntrate en la tormenta de arena.
+            </p>
+
+
+            <!-- Controles -->
+
+            <div class="controls">
+
+                <span>
+                    <kbd>W A S D</kbd>
+                    Caminar
+                </span>
+
+                <span>
+                    <kbd>Ratón</kbd>
+                    Mirar
+                </span>
+
+                <span>
+                    <kbd>E</kbd>
+                    Abrir caja
+                </span>
+
+                <span>
+                    <kbd>Shift</kbd>
+                    Correr
+                </span>
+
+                <span>
+                    <kbd>Espacio</kbd>
+                    Saltar
+                </span>
+
+                <span>
+                    <kbd>Esc</kbd>
+                    Pausa
+                </span>
+
+                <span>
+                    <kbd>T</kbd>
+                    Cambiar clima
+                </span>
+
+            </div>
+
+
+            <!-- Calidad gráfica -->
+
+            <label class="quality">
+
+                Calidad gráfica
+
+                <select id="quality">
+
+                    <option value="low">
+                        Baja · empezar aquí
+                    </option>
+
+                    <option value="medium">
+                        Media
+                    </option>
+
+                    <option value="high">
+                        Alta
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <!-- Clima -->
+
+            <label class="quality">
+
+                Clima
+
+                <select id="weather">
+
+                    <option value="auto">
+                        Automático · ciclo de tormentas
+                    </option>
+
+                    <option value="clear">
+                        Cielo despejado
+                    </option>
+
+                    <option value="storm">
+                        Tormenta de arena
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <!-- Iniciar -->
+
+            <button id="play" class="primary">
+
+                Explorar desierto
+                <span>→</span>
+
+            </button>
+
+
+            <!-- Regresar -->
+
+            <button id="returnRooms" class="return-rooms">
+
+                Volver
+
+            </button>
+
+
+            <!-- Nota -->
+
+            <p class="note">
+                Sin internet. Si el ratón no se captura, arrastra sobre
+                el escenario para mirar o usa las flechas. Esta prueba
+                aún no incluye multijugador ni combate.
+            </p>
+
+
+            <!-- Errores -->
+
+            <div id="error" role="alert" hidden>
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================================================
+     VENTANA DE PREGUNTA
+     ========================================================= -->
+
+    <dialog id="quiz">
+
+        <span class="eyebrow green">
+            CAJA VERDE / PREGUNTA
+        </span>
+
+        <h2 id="question"></h2>
+
+        <p id="shield">
+            Escudo activo · sin movimiento mientras respondes
+        </p>
+
+        <div id="answers"></div>
+
+        <p id="feedback" role="status">
+        </p>
+
+        <button id="closeQuiz">
+            Volver al desierto
+        </button>
+
+    </dialog>
+
+
+    <!-- =========================================================
+     SCRIPTS
+     ========================================================= -->
+
+    <!-- Configuración del escenario -->
+    <script src="desierto.config.js?v=preguntas-docente"></script>
+
+    <!-- Sistema de personajes -->
+    <script src="personaje.js?v=personaje-3d-fix3"></script>
+
+    <!-- Renderizador / integración 3D del personaje -->
+    <script src="personajeD.js?v=personaje-3d-fix3"></script>
+
+    <!-- Motor del escenario -->
+    <script src="escenario.js?v=personaje-3d-fix3"></script>
+</body>
+
+</html>

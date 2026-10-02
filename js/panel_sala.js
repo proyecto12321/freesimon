@@ -32,7 +32,12 @@ const detalleSala =
     document.getElementById("detalleSala");
 
 let personajeSeleccionado =
-    sessionStorage.getItem("personajeSeleccionado") || "X";
+    sessionStorage.getItem("personajeSeleccionado");
+
+let salaSeleccionada = null;
+
+const mensajeCargarJuego =
+    document.getElementById("mensajeCargarJuego");
 
 
 // =========================================
@@ -58,9 +63,29 @@ if (!nombre || !grado || !seccion) {
 const configuracionJuego = JSON.parse(
     sessionStorage.getItem("configuracionJuego") || "null"
 );
-const grupos = configuracionJuego
-    ? configuracionJuego.grupos
-    : JSON.parse(sessionStorage.getItem("gruposFreeSIMON") || "[]");
+
+function restaurarConfiguracionJuego() {
+    const escenarioId = configuracionJuego?.escenario?.id;
+    if (typeof escenarioId === "string" && escenarioId) {
+        sessionStorage.setItem("juegoEscenario", escenarioId);
+    }
+
+    const preguntas = configuracionJuego?.preguntas;
+    if (Array.isArray(preguntas) && preguntas.length > 0) {
+        sessionStorage.setItem("juegoPreguntas", JSON.stringify(preguntas));
+    }
+
+    const gruposConfigurados = configuracionJuego?.grupos;
+    if (Array.isArray(gruposConfigurados)) {
+        sessionStorage.setItem("juegoGrupos", JSON.stringify(gruposConfigurados));
+    }
+}
+
+restaurarConfiguracionJuego();
+
+const gruposGuardados = configuracionJuego?.grupos
+    ?? JSON.parse(sessionStorage.getItem("gruposFreeSIMON") || "[]");
+const grupos = Array.isArray(gruposGuardados) ? gruposGuardados : [];
 
 
 // =========================================
@@ -130,6 +155,8 @@ function mostrarGrupo(grupo) {
             elemento.setAttribute("aria-pressed", String(seleccionada));
         });
 
+        salaSeleccionada = grupo;
+        mensajeCargarJuego.textContent = "";
         mostrarDetalleSala(grupo);
     });
 
@@ -161,6 +188,7 @@ function mostrarDetalleSala(grupo) {
 
 document.addEventListener("personajeSeleccionado", (event) => {
     personajeSeleccionado = event.detail.nombre;
+    mensajeCargarJuego.textContent = "";
 
     const personaje = detalleSala.querySelector(".resumen-sala p:last-child");
     if (personaje) {
@@ -173,12 +201,51 @@ document.addEventListener("personajeSeleccionado", (event) => {
 // INICIAR JUEGO
 // =========================================
 
-// Por ahora sin funcionalidad.
-
 btnIniciarJuego.addEventListener("click", () => {
-    window.location.href = "../data/escenario.html";
-});
+    if (!personajeSeleccionado) {
+        mensajeCargarJuego.textContent =
+            "Selecciona un personaje antes de cargar el juego.";
+        return;
+    }
 
+    if (!salaSeleccionada) {
+        mensajeCargarJuego.textContent =
+            "Selecciona una sala antes de cargar el juego.";
+        return;
+    }
+
+    restaurarConfiguracionJuego();
+
+    const escenarioId = configuracionJuego?.escenario?.id
+        || sessionStorage.getItem("juegoEscenario")
+        || sessionStorage.getItem("escenarioSeleccionado");
+
+    const rutas = {
+        bosque: "../data/bosque.html",
+        desierto: "../data/escenario.html",
+        cielo: "../data/cielo.html",
+        ciudad: "../data/ciudad.html",
+        inframundo: "../data/inframundo.html",
+        mar: "../data/mar.html"
+    };
+
+    if (!escenarioId) {
+        mensajeCargarJuego.textContent =
+            "Selecciona un escenario en el panel de configuración antes de cargar el juego.";
+        return;
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(rutas, escenarioId)) {
+        mensajeCargarJuego.textContent =
+            "El escenario seleccionado aún no está disponible. Puedes elegir Cielo, Mar o Desierto.";
+        return;
+    }
+
+    sessionStorage.setItem("juegoPersonaje", personajeSeleccionado);
+    sessionStorage.setItem("personajeSeleccionado", personajeSeleccionado);
+    sessionStorage.setItem("juegoSala", JSON.stringify(salaSeleccionada));
+    window.location.href = rutas[escenarioId];
+});
 
 // =========================================
 // VOLVER

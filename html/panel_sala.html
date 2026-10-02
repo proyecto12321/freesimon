@@ -9,7 +9,7 @@
 
     <title>Sala de juego - FreeSIMON</title>
 
-    <link rel="stylesheet" href="../css/panel_sala.css?v=redisenio">
+    <link rel="stylesheet" href="../css/panel_sala.css?v=detalles">
     <link rel="stylesheet" href="../data/personaje.css">
     <link rel="stylesheet" href="../css/tema_bloques.css">
 
@@ -92,12 +92,13 @@
             <section class="panel panel-acciones" aria-label="Acciones de la sala">
                 <div class="contenido-panel acciones">
                     <button id="btnIniciarJuego" class="boton boton-iniciar" type="button">
-                        Comenzar juego
+                        Cargar juego
                     </button>
 
                     <button id="btnVolver" class="boton boton-volver" type="button">
                         Volver
                     </button>
+                    <p id="mensajeCargarJuego" class="mensaje-carga" role="status" aria-live="polite"></p>
                 </div>
             </section>
 
@@ -106,7 +107,7 @@
     </main>
 
 
-    <script src="../js/panel_sala.js"></script>
+    <script src="../js/panel_sala.js?v=configuracion-docente-persistente"></script>
     <script src="../data/personaje.js"></script>
 
 </body>

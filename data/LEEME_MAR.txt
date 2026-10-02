@@ -1,0 +1,65 @@
+MAR · ARCHIPIÉLAGO DE GLOBOS · V1
+
+Incluye cuatro islas tropicales y tres plataformas de madera con globos,
+seis pasarelas, palmeras, faroles, rocas costeras, faro, mar animado,
+ruta de saltos opcional y cofres detallados. Los globos son elementos
+estáticos de ambientación: no se pilotan. Las plataformas permanecen fijas.
+No hay natación en esta prueba. Caer al agua activa la reaparición.
+Los efectos de agua son sencillos, sin reflejos ni simulación realista.
+
+INSTALACIÓN
+Extrae los cuatro archivos de código juntos dentro de data. Abre mar.html
+con doble clic o desde Live Server. No necesita internet ni instalación.
+Estos archivos tienen nombres propios; no reemplazan los del desierto.
+
+CONTROLES
+W/A/S/D: caminar. Ratón: mirar. Shift: correr. Espacio: saltar.
+E: abrir un cofre cercano. R: regresar al último punto seguro.
+Esc: pausa y ajuste de calidad. Flechas o arrastrar con el ratón: mirar
+si no se captura el cursor. Calidad Media y Alta muestran detalles pequeños.
+
+REGLAS DE ESTA PRUEBA
+Un jugador. Cinco cofres verdes con preguntas y cinco rojos con equipamiento.
+Respuesta correcta: +100 puntos. Un intento por pregunta, 30 segundos.
+Al responder, el movimiento queda bloqueado y el escudo lógico está activo.
+Tras contestar o vencer el plazo, regresas al juego después de 3 segundos.
+Salir antes de contestar consume el intento sin sumar puntos.
+Los cofres usados quedan abiertos. Las armas solo son objetos de inventario;
+no hay disparos, daño, enemigos ni modelos de armas en primera persona.
+Al caer reapareces en la última isla alcanzada, conservando puntos y objetos.
+Recargar el HTML reinicia todo el progreso. No hay guardado todavía.
+
+PERSONALIZACIÓN
+mar.config.js contiene preguntas, cofres, islas y puentes.
+El campo correcta usa índices: 0 primera respuesta, 1 segunda, 2 tercera.
+El campo pregunta de un cofre indica el índice dentro de preguntas.
+No cambies posiciones o tamaños de islas sin adaptar también puentes,
+vegetación y edificios: los adornos se ubican desde mar.js.
+Los puentes se ajustan a las orillas reales para evitar escalones abruptos.
+La geometría y la física de salto son sencillas; no se puede editar el terreno.
+
+INTEGRACIÓN POSTERIOR
+Global de configuración: MAR_CONFIG.
+API: window.EscenarioMar.getState(), pause(), resume(), returnToCheckpoint(), reset().
+resume() solicita capturar el ratón; úsala desde una acción del usuario.
+Eventos en window: escenario:equipo, escenario:respuesta,
+escenario:proteccion y escenario:reaparicion.
+No hay servidor ni multijugador. Al integrar el proyecto, el servidor debe
+validar movimiento, respuestas, puntos, inventario y estado de protección.
+Las respuestas correctas del archivo local son visibles en este prototipo.
+
+VALIDACIÓN
+Sintaxis JavaScript y lógica de preguntas, inventario, protección y pausa
+comprobadas. Se probaron los seis puentes en ambos sentidos, la escalinata,
+los saltos de la ruta opcional, aterrizajes y recuperación tras una caída.
+Los shaders se compilaron/enlazaron con EGL / OpenGL ES. Se reprodujeron las
+llamadas gráficas y se revisaron imágenes, sin errores de OpenGL.
+No se probó la interfaz completa en un navegador real ni en tu laptop.
+Esto no garantiza rendimiento para 30 jugadores: sigue pendiente integrarlo
+y medirlo en los equipos del colegio.
+
+PRUEBA RECOMENDADA
+Abre el HTML, prueba las cajas iniciales, cruza los puentes, haz los saltos
+y prueba R y la reaparición. Observa los FPS en Alta y cambia a Media o Baja
+si notas lentitud. Cuando envíes tu proyecto, se conectará este escenario
+con tu selector de mapas y la lógica compartida.
