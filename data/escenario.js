@@ -71,6 +71,45 @@
   const half = config.tamano / 2, tile = 4, chunkSize = 32, chunks = new Map(), obstacles = [], boxes = [];
   const player = { x: config.inicio.x, z: config.inicio.z, y: 0, yaw: 0, pitch: -.08, jump: 0, vy: 0, protected: false };
   let active = false, points = 0, inventory = [], keys = new Set(), nearest = null, questionBox = null, deadline = 0, solved = false, returnAt = 0;
+
+  //implementando vida
+  // =====================================================
+  // CONECTAR LA VIDA CON EL ESTADO DEL ESCENARIO
+  // =====================================================
+
+  VidaJugador.configurar({
+    // Solo aceptar golpes durante el juego y fuera de preguntas.
+    puedeRecibirGolpe: () => {
+      return active && !player.protected;
+    },
+
+    // Detener al jugador cuando pierde el último corazón.
+    alMorir: () => {
+      active = false;
+      keys.clear();
+      player.vy = 0;
+
+      // Liberar el ratón y detener el arrastre.
+      release();
+
+      // Ocultar avisos de interacción y menú de pausa.
+      $('hint').hidden = true;
+      $('overlay').hidden = true;
+    }
+  });// fin de la implementacion
+
+  // =====================================================
+  // PRUEBA TEMPORAL: H QUITA UN CORAZÓN
+  // Eliminar este bloque cuando conectemos los ataques.
+  // =====================================================
+
+  window.addEventListener("keydown", evento => {
+    // Ignorar la repetición automática al mantener H presionada.
+    if (evento.code !== "KeyH" || evento.repeat) return;
+
+    VidaJugador.recibirGolpe();
+  });
+
   let previous = 0, fpsStart = 0, frames = 0, lastUI = 0, toastTimer, drag = false;
   function ground(x, z) {
     const cx = Math.floor(x / tile) * tile + tile / 2, cz = Math.floor(z / tile) * tile + tile / 2;
@@ -265,6 +304,10 @@ uniform mediump float distanceMax;
     boxes.push(b);
     obstacles.push({ x: b.x, z: b.z, r: 1.05, height: 1.5, box: b });
   }
+  const botiquines = BotiquinesJugador.crear({
+    cube, upload, ground, obstacles, boxes, inicio: config.inicio,
+    tamano: config.tamano, semilla: config.semilla
+  });
   // Nubes volumétricas sencillas: todas agrupadas en una única malla.
   const cloudData = [];
   for (let i = 0; i < (config.cantidadNubes || 32); i++) {
@@ -302,7 +345,7 @@ uniform mediump float distanceMax;
   }
   function notify(message) { $('toast').textContent = message; $('toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').hidden = true, 3500); }
   function release() { if (document.pointerLockElement === canvas) document.exitPointerLock(); keys.clear(); drag = false; }
-  function resume() { if ($('quiz').open) return; active = true; $('overlay').hidden = true; previous = performance.now(); try { const req = canvas.requestPointerLock(); if (req && req.catch) req.catch(() => notify('Arrastra con el ratón o usa las flechas para mirar.')); } catch { notify('Arrastra con el ratón para mirar.'); } }
+  function resume() { if ($('quiz').open) return; active = true; $('overlay').hidden = true; previous = performance.now(); try { const req = canvas.requestPointerLock(); if (req && req.catch) req.catch(() => notify('Arrastra con el ratón o usa las flechas para mirar.')); } catch { notify('Arrastra con el ratón para mirar.'); }; if (VidaJugador.estaMuerto()) return; }
   function pause() { active = false; $('overlay').hidden = false; $('play').firstChild.textContent = 'Continuar exploración '; $('hint').hidden = true; release(); }
   $('play').onclick = resume; $('menuBtn').onclick = pause;
   $('returnRooms').onclick = () => { release(); window.location.href = '../html/panel_sala.html'; };
@@ -394,6 +437,8 @@ uniform mediump float distanceMax;
     if (allowed(player.x + dx, player.z)) player.x += dx; if (allowed(player.x, player.z + dz)) player.z += dz;
     if (player.jump > 0 || player.vy > 0) { player.vy -= 13 * dt; player.jump = Math.max(0, player.jump + player.vy * dt); if (player.jump === 0) player.vy = 0; }
     player.y += (ground(player.x, player.z) + 1.7 + player.jump - player.y) * Math.min(1, dt * 18);
+    const curacion = botiquines.recoger(player, player.y - 1.7, VidaJugador.recuperarCorazon);
+    if (curacion !== null) notify(curacion ? 'Recuperaste un corazón.' : 'Ya tienes todos los corazones.');
     nearest = null; let min = 3.7; for (const b of boxes) { const d = Math.hypot(player.x - b.x, player.z - b.z); if (!b.opened && d < min) { nearest = b; min = d; } }
     $('hint').hidden = !nearest; if (nearest) $('hint').textContent = '[ E ] ' + (nearest.tipo === 'pregunta' ? 'Responder pregunta · escudo activo al abrir' : 'Abrir caja de equipamiento');
   }
@@ -492,9 +537,14 @@ uniform mediump float distanceMax;
     const visibleDistance = quality.distance * (1 - storm) + 28 * storm;
     for (const c of chunks.values()) if (Math.hypot(c.x - player.x, c.z - player.z) < visibleDistance + 24) { draw(c); if (qualityName !== 'low') draw(c.detailMesh); }
     for (const b of boxes) if (Math.hypot(b.x - player.x, b.z - player.z) < visibleDistance + 3) draw(b.opened ? b.openMesh : b);
+    botiquines.dibujar(draw, player, visibleDistance);
     // Dibujar el personaje dentro del mundo.
     // La tormenta se dibuja después para cubrirlo también.
-    terceraPersona.dibujar(program, loc);
+
+    // Parpadear durante el segundo de protección tras un golpe.
+    if (VidaJugador.debeDibujarPersonaje()) {
+      terceraPersona.dibujar(program, loc);
+    }
     if (storm > .005) {
       gl.disable(gl.DEPTH_TEST); gl.depthMask(false); gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       screenPass(dustProgram, dustLoc); gl.uniform1f(dustLoc.storm, storm); gl.uniform1f(dustLoc.time, worldTime % 120); gl.uniform1f(dustLoc.aspect, canvas.width / canvas.height); gl.drawArrays(gl.TRIANGLES, 0, 6);

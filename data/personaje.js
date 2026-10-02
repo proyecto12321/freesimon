@@ -283,7 +283,7 @@
                 crearParte("cinturon", 0, 146, 70, 12, 42, colores.cabelloRubio)
             ]
         }),
-        crearAventurero("k1-voxel", "K1", "#e65d83", {
+        crearAventurero("k1-voxel", "MJ.", "#e65d83", {
             torso: paleta("#e65782", "#9d2d55", "#c8406b", "#a3335a", "#ff83a4", "#72203f"),
             pantalones: colores.pantalonesAzules,
             cabeza: [
@@ -295,7 +295,7 @@
                 crearParte("microfono-k1", 60, 90, 8, 25, 8, colores.blanco)
             ]
         }),
-        crearAventurero("k2-voxel", "K2", "#41a6a0", {
+        crearAventurero("k2-voxel", "Jinjin", "#41a6a0", {
             torso: paleta("#36a89d", "#1c625f", "#298b83", "#216e6a", "#5ac9b9", "#174a4c"),
             pantalones: colores.negro,
             cabeza: [
@@ -308,7 +308,7 @@
                 crearParte("solapa-k2-derecha", 19, 91, 16, 49, 46, colores.blanco)
             ]
         }),
-        crearAventurero("k3-voxel", "K3", "#7157c8", {
+        crearAventurero("k3-voxel", "Cha Eun-woo", "#7157c8", {
             torso: paleta("#7559c9", "#403175", "#5f49a2", "#493881", "#a18ae7", "#312454"),
             pantalones: colores.pantalonesGrises,
             cabeza: [
@@ -321,7 +321,7 @@
                 crearParte("insignia-k3", 0, 96, 13, 13, 48, colores.cabelloRubio)
             ]
         }),
-        crearAventurero("k4-voxel", "K4", "#ed9a43", {
+        crearAventurero("k4-voxel", "Moonbin", "#ed9a43", {
             torso: paleta("#e99a3c", "#9c5428", "#c57b30", "#a9602b", "#ffc266", "#75401f"),
             pantalones: colores.pantalonesRojos,
             cabeza: [
@@ -335,7 +335,7 @@
                 crearParte("pulsera-k4", 53, 134, 15, 10, 37, colores.cabelloRubio)
             ]
         }),
-        crearAventurero("k5-voxel", "K5", "#4989d3", {
+        crearAventurero("k5-voxel", "Rocky", "#4989d3", {
             torso: paleta("#448bd2", "#254f8a", "#3673b5", "#2c5e97", "#70b4f2", "#1d3b6d"),
             pantalones: colores.pantalonesGrises,
             cabeza: [
@@ -349,7 +349,7 @@
                 crearParte("microfono-k5", -60, 88, 8, 23, 8, colores.cabelloRubio)
             ]
         }),
-        crearAventurero("k6-voxel", "K6", "#55a65b", {
+        crearAventurero("k6-voxel", "Sanha", "#55a65b", {
             torso: paleta("#4d9e55", "#2b5c36", "#3b8045", "#326b3b", "#79c879", "#20472e"),
             pantalones: colores.negro,
             cabeza: [

@@ -63,6 +63,23 @@ const random=()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294
 const half=config.tamano/2, chunkSize=32, chunks=new Map(), obstacles=[], boxes=[], surfaces=[], waterData=[];
 const player={x:config.inicio.x,z:config.inicio.z,y:0,yaw:config.inicio.yaw||0,pitch:.04,feet:2,grounded:true,vy:0,protected:false};
 let active=false, points=0, inventory=[], keys=new Set(), nearest=null, questionBox=null, deadline=0, solved=false, returnAt=0;
+
+VidaJugador.configurar({
+ puedeRecibirGolpe:()=>active&&!player.protected,
+ alMorir:()=>{
+  active=false;
+  keys.clear();
+  player.vy=0;
+  release();
+  $('hint').hidden=true;
+  $('overlay').hidden=true;
+ }
+});
+
+window.addEventListener('keydown',event=>{
+ if(event.code!=='KeyH'||event.repeat)return;
+ VidaJugador.recibirGolpe();
+});
 let previous=0,fpsStart=0,frames=0,lastUI=0,toastTimer,drag=false;
 let checkpoint={x:config.inicio.x,z:config.inicio.z,y:2},falls=0,currentIsland='inicio';
 function surfaceAt(x,z){
@@ -293,6 +310,7 @@ for(const item of config.cajas){const b={...item,y:ground(item.x,item.z),opened:
  if(b.tipo==='pregunta')b.pregunta=indicePreguntaCaja++%config.preguntas.length;
  Object.assign(b,upload(chestGeometry(b,false)));b.openMesh=upload(chestGeometry(b,true));boxes.push(b);obstacles.push({x:b.x,z:b.z,r:1.05,height:1.5,y:b.y,h:1.5,box:b});}
 // Mar de nubes inferior y nubes altas. Todo se dibuja en una sola malla.
+const botiquines=BotiquinesJugador.crear({cube,upload,ground,obstacles,boxes,surfaces,inicio:config.inicio,tamano:config.tamano,semilla:config.semilla});
 const cloudData=[];
 function cloud(x,y,z,w,d,h){
  cube(cloudData,x,y,z,w,h,d,[.99,.99,.97]);
@@ -310,7 +328,7 @@ addEventListener('resize',resize);resize();
 $('quality').onchange=()=>{qualityName=$('quality').value;quality=presets[qualityName];$('qualityLabel').textContent='Calidad '+({low:'baja',medium:'media',high:'alta'}[$('quality').value]);resize();};
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,3500);}
 function release(){if(document.pointerLockElement===canvas)document.exitPointerLock();keys.clear();drag=false;}
-function resume(){if($('quiz').open)return;active=true;$('overlay').hidden=true;previous=performance.now();try{const req=canvas.requestPointerLock();if(req&&req.catch)req.catch(()=>notify('Arrastra con el ratón o usa las flechas para mirar.'));}catch{notify('Arrastra con el ratón para mirar.');}}
+function resume(){if($('quiz').open||VidaJugador.estaMuerto())return;active=true;$('overlay').hidden=true;previous=performance.now();try{const req=canvas.requestPointerLock();if(req&&req.catch)req.catch(()=>notify('Arrastra con el ratón o usa las flechas para mirar.'));}catch{notify('Arrastra con el ratón para mirar.');}}
 function pause(){active=false;$('overlay').hidden=false;$('play').firstChild.textContent='Continuar exploración ';$('hint').hidden=true;release();}
 $('play').onclick=resume;$('menuBtn').onclick=pause;
 $('returnRooms').onclick=()=>{release();window.location.href='../html/panel_sala.html';};
@@ -374,6 +392,8 @@ function update(dt){
  const island=config.islas.find(i=>i.id===floor.island);if(island){currentIsland=island.id;
  // Guardar una posición ya alcanzada, transitable y libre de obstáculos.
  checkpoint={x:player.x,z:player.z,y:player.feet};$('weatherName').textContent=island.nombre;notify('Punto seguro: '+island.nombre);}}
+ const curacion=botiquines.recoger(player,player.feet,VidaJugador.recuperarCorazon);
+ if(curacion!==null)notify(curacion?'Recuperaste un corazón.':'Ya tienes todos los corazones.');
  nearest=null;let min=3.7;for(const b of boxes){const d=Math.hypot(player.x-b.x,player.z-b.z);if(!b.opened&&d<min&&Math.abs(player.feet-b.y)<2&&player.grounded){nearest=b;min=d;}}
  $('hint').hidden=!nearest;if(nearest)$('hint').textContent='[ E ] '+(nearest.tipo==='pregunta'?'Responder pregunta · escudo activo':'Abrir cofre de equipamiento');
 }
@@ -412,8 +432,9 @@ function render(time){const dt=Math.min(.04,(time-previous)/1000||0);previous=ti
  gl.clear(gl.DEPTH_BUFFER_BIT);gl.uniform3f(loc.offset,0,0,0);gl.uniform1f(loc.distanceMax,quality.distance);
  for(const c of chunks.values())if(Math.hypot(c.x-player.x,c.z-player.z)<quality.distance+24){draw(c);if(qualityName!=='low')draw(c.detailMesh);}
  for(const b of boxes)if(Math.hypot(b.x-player.x,b.z-player.z)<quality.distance)draw(b.opened?b.openMesh:b);
+ botiquines.dibujar(draw,player,quality.distance);
  gl.useProgram(waterProgram);gl.uniform3f(waterLoc.camera,vista.x,vista.y,vista.z);gl.uniform3f(waterLoc.offset,0,0,0);gl.uniform2f(waterLoc.turn,vista.yaw,vista.pitch);gl.uniform1f(waterLoc.aspect,canvas.width/canvas.height);gl.uniform1f(waterLoc.distanceMax,quality.distance);gl.uniform1f(waterLoc.time,worldTime%120);draw(water,waterLoc);
- terceraPersona.dibujar(program,loc);
+ if(VidaJugador.debeDibujarPersonaje())terceraPersona.dibujar(program,loc);
  frames++;if(time-fpsStart>=1000){$('fps').textContent=Math.round(frames*1000/(time-fpsStart))+' FPS';frames=0;fpsStart=time;}
  if(time-lastUI>120){minimap();lastUI=time;}
  requestAnimationFrame(render);
