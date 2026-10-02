@@ -399,20 +399,34 @@ function minimap(){map.fillStyle='#9ed3ed';map.fillRect(0,0,160,160);const mx=x=
  map.save();map.translate(mx(player.x),mx(player.z));map.rotate(-player.yaw);map.fillStyle='#fff';map.strokeStyle='#24445a';map.lineWidth=1.5;map.beginPath();map.moveTo(0,-6);map.lineTo(4,4);map.lineTo(0,2);map.lineTo(-4,4);map.closePath();map.fill();map.stroke();map.restore();
  $('coords').textContent=Math.round(player.x)+' / '+Math.round(player.z);
 }
+const terceraPersona=new PersonajeTerceraPersona(gl,{
+ distancia:8,
+ altura:1.85,
+ bloqueado:(x,y,z)=>{
+  if(y<ground(x,z)+.25)return true;
+  return obstacles.some(o=>{
+   const base=o.box?.y??o.y??ground(o.x,o.z);
+   const altura=o.height??o.h??0;
+   return y>base-.2&&y<base+altura+.3&&Math.hypot(x-o.x,z-o.z)<(o.r??0)+.3;
+  });
+ }
+});
 function render(time){const dt=Math.min(.04,(time-previous)/1000||0);previous=time;
  if(active)update(dt);
+ const vista=terceraPersona.actualizar(player,dt,player.y-1.7);
  if($('quiz').open&&solved&&returnAt&&time>=returnAt)closeQuiz();
  if($('quiz').open&&!solved){const left=Math.max(0,Math.ceil((deadline-time)/1000));$('shield').textContent='Escudo activo · '+left+' s · movimiento bloqueado';if(!left)answer(null);}
  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
  gl.disable(gl.DEPTH_TEST);gl.depthMask(false);
- screenPass(skyProgram,skyLoc);gl.uniform2f(skyLoc.turn,player.yaw,player.pitch);gl.uniform1f(skyLoc.aspect,canvas.width/canvas.height);gl.drawArrays(gl.TRIANGLES,0,6);
- gl.useProgram(program);gl.uniform3f(loc.camera,player.x,player.y,player.z);gl.uniform2f(loc.turn,player.yaw,player.pitch);gl.uniform1f(loc.aspect,canvas.width/canvas.height);
+ screenPass(skyProgram,skyLoc);gl.uniform2f(skyLoc.turn,vista.yaw,vista.pitch);gl.uniform1f(skyLoc.aspect,canvas.width/canvas.height);gl.drawArrays(gl.TRIANGLES,0,6);
+ gl.useProgram(program);gl.uniform3f(loc.camera,vista.x,vista.y,vista.z);gl.uniform2f(loc.turn,vista.yaw,vista.pitch);gl.uniform1f(loc.aspect,canvas.width/canvas.height);
  gl.enable(gl.DEPTH_TEST);gl.depthMask(true);
  gl.uniform1f(loc.distanceMax,460);gl.uniform3f(loc.offset,Math.sin(worldTime*.014)*9,0,Math.sin(worldTime*.01)*5);draw(clouds);
  gl.clear(gl.DEPTH_BUFFER_BIT);gl.uniform3f(loc.offset,0,0,0);gl.uniform1f(loc.distanceMax,quality.distance);
  for(const c of chunks.values())if(Math.hypot(c.x-player.x,c.z-player.z)<quality.distance+24){draw(c);if(qualityName!=='low')draw(c.detailMesh);}
  for(const b of boxes)if(Math.hypot(b.x-player.x,b.z-player.z)<quality.distance)draw(b.opened?b.openMesh:b);
- gl.useProgram(waterProgram);gl.uniform3f(waterLoc.camera,player.x,player.y,player.z);gl.uniform3f(waterLoc.offset,0,0,0);gl.uniform2f(waterLoc.turn,player.yaw,player.pitch);gl.uniform1f(waterLoc.aspect,canvas.width/canvas.height);gl.uniform1f(waterLoc.distanceMax,quality.distance);gl.uniform1f(waterLoc.time,worldTime%120);draw(water,waterLoc);
+ gl.useProgram(waterProgram);gl.uniform3f(waterLoc.camera,vista.x,vista.y,vista.z);gl.uniform3f(waterLoc.offset,0,0,0);gl.uniform2f(waterLoc.turn,vista.yaw,vista.pitch);gl.uniform1f(waterLoc.aspect,canvas.width/canvas.height);gl.uniform1f(waterLoc.distanceMax,quality.distance);gl.uniform1f(waterLoc.time,worldTime%120);draw(water,waterLoc);
+ terceraPersona.dibujar(program,loc);
  frames++;if(time-fpsStart>=1000){$('fps').textContent=Math.round(frames*1000/(time-fpsStart))+' FPS';frames=0;fpsStart=time;}
  if(time-lastUI>120){minimap();lastUI=time;}
  requestAnimationFrame(render);
