@@ -314,6 +314,8 @@ let indicePreguntaCaja=0;
 for(const item of config.cajas){const b={...item,y:ground(item.x,item.z),opened:false};
  if(b.tipo==='pregunta')b.pregunta=indicePreguntaCaja++%config.preguntas.length;
  Object.assign(b,upload(chestGeometry(b,false)));b.openMesh=upload(chestGeometry(b,true));boxes.push(b);obstacles.push({x:b.x,z:b.z,r:1.05,height:1.5,y:b.y,h:1.5,box:b});}
+let modoSupervivencia;
+try{modoSupervivencia=Supervivencia.prepararCajas('cielo',boxes.filter(b=>b.tipo==='pregunta'));}catch(error){fail(error.message);return;}
 const botiquines=BotiquinesJugador.crear({cube,upload,ground,obstacles,boxes,surfaces,inicio:config.inicio,tamano:config.tamano,semilla:config.semilla});
 // Mar de nubes inferior y nubes altas. Todo se dibuja en una sola malla.
 const cloudData=[];
@@ -347,7 +349,7 @@ addEventListener('mousemove',e=>{if(!active||$('quiz').open)return;if(document.p
 addEventListener('blur',()=>{keys.clear();if(active)pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&active)pause();});
 const movement=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight'];
-addEventListener('keydown',e=>{if(!active||$('quiz').open)return;if(movement.includes(e.code))e.preventDefault();keys.add(e.code);if(e.code==='Escape'){pause();}if(e.code==='KeyE'&&!e.repeat)interact();if(e.code==='KeyR'&&!e.repeat)VidaJugador.recibirGolpe();if(e.code==='KeyV'&&!e.repeat)respawn(false);if(e.code==='Space'&&!e.repeat&&player.grounded){player.vy=7.5;player.grounded=false;}});
+addEventListener('keydown',e=>{if(!active||$('quiz').open||player.protected||VidaJugador.estaMuerto())return;if(movement.includes(e.code))e.preventDefault();keys.add(e.code);if(e.code==='Escape'){pause();}if(e.code==='KeyE'&&!e.repeat)interact();if(equipoJugador.manejarTecla(e))return;if(e.code==='KeyR'&&!e.repeat)equipoJugador.recibirDano(1);if(e.code==='KeyV'&&!e.repeat)respawn(false);if(e.code==='Space'&&!e.repeat&&player.grounded){player.vy=7.5;player.grounded=false;}});
 addEventListener('keyup',e=>keys.delete(e.code));
 function allowed(x,z){
  const floor=surfaceAt(x,z);
@@ -358,7 +360,7 @@ function allowed(x,z){
  const side=Math.abs((x-b.ax)*(-uz)+(z-b.az)*ux),deck=b.ay+(b.by-b.ay)*t-Math.sin(t*Math.PI)*.55;
  if(side>b.ancho/2-.22&&side<b.ancho/2+.25&&player.feet<deck+1.12&&player.feet+1.6>deck)return false;
  }
- return !obstacles.some(o=>player.feet<o.y+o.h&&player.feet+1.65>o.y&&Math.hypot(x-o.x,z-o.z)<o.r+.22);
+ return !obstacles.some(o=>!o.box?.supervivenciaOculta&&player.feet<o.y+o.h&&player.feet+1.65>o.y&&Math.hypot(x-o.x,z-o.z)<o.r+.22);
 }
 function respawn(fell=true){
  player.x=checkpoint.x;player.z=checkpoint.z;player.feet=checkpoint.y;player.y=checkpoint.y+1.7;player.vy=0;player.grounded=true;keys.clear();
@@ -368,20 +370,20 @@ function respawn(fell=true){
 }
 function emit(name,detail){window.dispatchEvent(new CustomEvent(name,{detail}));}
 function interact(){if(!nearest||!active||!player.grounded)return;const b=nearest;
- if(b.tipo==='equipo'){b.opened=true;inventory.push(b.objeto);$('inventory').textContent=inventory.join(' · ');notify('Recogiste: '+b.objeto+' · demostración sin combate');emit('escenario:equipo',{id:b.id,objeto:b.objeto});return;}
+ if(b.tipo==='equipo'){equipoJugador.recoger(b);return;}
  const q=config.preguntas[b.pregunta];if(!q){notify('Esta caja todavía no tiene una pregunta válida.');return;}
  questionBox=b;solved=false;returnAt=0;player.protected=true;active=false;release();deadline=performance.now()+config.tiempoPregunta*1000;
  $('question').textContent=q.texto;$('answers').replaceChildren();$('feedback').textContent='';$('hint').hidden=true;
  q.opciones.forEach((option,i)=>{const btn=document.createElement('button');btn.textContent=String.fromCharCode(65+i)+'. '+option;btn.onclick=()=>answer(i);$('answers').append(btn);});
  $('quiz').showModal();emit('escenario:proteccion',{activa:true,id:b.id});
 }
-function answer(index){if(solved||!questionBox)return;solved=true;returnAt=performance.now()+3000;const q=config.preguntas[questionBox.pregunta],correct=index===q.correcta;questionBox.opened=true;
+function answer(index){if(solved||!questionBox)return;solved=true;returnAt=performance.now()+3000;const q=config.preguntas[questionBox.pregunta],correct=index===q.correcta;if(!modoSupervivencia||correct)questionBox.opened=true;if(modoSupervivencia)Supervivencia.registrarRespuesta(questionBox,correct);
  if(correct)points+=100;$('score').textContent=points+' puntos';
- $('feedback').textContent=correct?'¡Correcto! +100 puntos':(index===null?'Tiempo terminado. ':'')+'Respuesta correcta: '+q.opciones[q.correcta];
+ $('feedback').textContent=correct?'¡Correcto! +100 puntos':modoSupervivencia?(index===null?'Tiempo terminado. ':'Respuesta incorrecta. ')+'La caja conserva esta pregunta. Inténtalo de nuevo.':(index===null?'Tiempo terminado. ':'')+'Respuesta correcta: '+q.opciones[q.correcta];
  [...$('answers').children].forEach(b=>b.disabled=true);$('shield').textContent='Respuesta registrada · regreso automático en 3 segundos';
  emit('escenario:respuesta',{id:questionBox.id,seleccion:index,correcta:correct,puntos:points});
 }
-function closeQuiz(){if(!solved)answer(null);$('quiz').close();player.protected=false;emit('escenario:proteccion',{activa:false});questionBox=null;resume();}
+function closeQuiz(){if(!solved)answer(null);$('quiz').close();player.protected=false;emit('escenario:proteccion',{activa:false});questionBox=null;if(Supervivencia.alCerrarPregunta())return;resume();}
 $('closeQuiz').onclick=closeQuiz;$('quiz').addEventListener('cancel',e=>{e.preventDefault();closeQuiz();});
 function update(dt){
  worldTime+=dt;
@@ -401,9 +403,9 @@ function update(dt){
  const island=config.islas.find(i=>i.id===floor.island);if(island){currentIsland=island.id;
  // Guardar una posición ya alcanzada, transitable y libre de obstáculos.
  checkpoint={x:player.x,z:player.z,y:player.feet};$('weatherName').textContent=island.nombre;notify('Punto seguro: '+island.nombre);}}
- const curacion=botiquines.recoger(player,player.feet,VidaJugador.recuperarCorazon);
+ const curacion=botiquines.recoger(player,player.feet,()=>VidaJugador.recuperarCorazones(1));
  if(curacion!==null)notify(curacion?'Recuperaste un corazón.':'Ya tienes todos los corazones.');
- nearest=null;let min=3.7;for(const b of boxes){const d=Math.hypot(player.x-b.x,player.z-b.z);if(!b.opened&&d<min&&Math.abs(player.feet-b.y)<2&&player.grounded){nearest=b;min=d;}}
+ nearest=null;let min=3.7;for(const b of boxes){if(b.supervivenciaOculta)continue;const d=Math.hypot(player.x-b.x,player.z-b.z);if(!b.opened&&d<min&&Math.abs(player.feet-b.y)<2&&player.grounded){nearest=b;min=d;}}
  $('hint').hidden=!nearest;if(nearest)$('hint').textContent='[ E ] '+(nearest.tipo==='pregunta'?'Responder pregunta · escudo activo':'Abrir cofre de equipamiento');
 }
 const map=$('mapa').getContext('2d');
@@ -411,12 +413,20 @@ function minimap(){map.fillStyle='#9ed3ed';map.fillRect(0,0,160,160);const mx=x=
  map.strokeStyle='#b99766';map.lineWidth=2;for(const b of config.puentes){map.beginPath();map.moveTo(mx(b.ax),mx(b.az));map.lineTo(mx(b.bx),mx(b.bz));map.stroke();}
  for(const p of config.saltos){map.fillStyle='#8fb953';map.fillRect(mx(p.x)-1,mx(p.z)-1,2,2);}
  for(const island of config.islas){map.fillStyle=island.id===currentIsland?'#8bbe57':'#659851';map.beginPath();map.ellipse(mx(island.x),mx(island.z),island.rx/config.tamano*160,island.rz/config.tamano*160,0,0,Math.PI*2);map.fill();}
- for(const b of boxes){map.fillStyle=b.opened?'#5d7b81':b.tipo==='pregunta'?'#20bd69':'#d74736';map.fillRect(mx(b.x)-2,mx(b.z)-2,4,4);}
+ for(const b of boxes){if(b.supervivenciaOculta)continue;map.fillStyle=b.opened?'#5d7b81':b.tipo==='pregunta'?'#20bd69':'#d74736';map.fillRect(mx(b.x)-2,mx(b.z)-2,4,4);}
  botiquines.dibujarEnMinimapa(map,mx);
  map.save();map.translate(mx(player.x),mx(player.z));map.rotate(-player.yaw);map.fillStyle='#fff';map.strokeStyle='#24445a';map.lineWidth=1.5;map.beginPath();map.moveTo(0,-6);map.lineTo(4,4);map.lineTo(0,2);map.lineTo(-4,4);map.closePath();map.fill();map.stroke();map.restore();
  $('coords').textContent=Math.round(player.x)+' / '+Math.round(player.z);
 }
+const equipoJugador=new EquipoJugador({
+ inventario:inventory,
+ avisar:notify,
+ puedeUsar:()=>active&&!player.protected&&!VidaJugador.estaMuerto(),
+ puedeRecibirDano:()=>active&&!player.protected&&!VidaJugador.estaMuerto()
+});
+canvas.addEventListener('mousedown',e=>{if(e.button===0&&document.pointerLockElement===canvas&&active&&!player.protected&&!VidaJugador.estaMuerto())equipoJugador.usarArma();});
 const terceraPersona=new PersonajeTerceraPersona(gl,{
+ equipo:equipoJugador,
  distancia:8,
  altura:1.85,
  bloqueado:(x,y,z)=>{
@@ -428,9 +438,21 @@ const terceraPersona=new PersonajeTerceraPersona(gl,{
   });
  }
 });
+const flechas=new FlechasEscenario(gl,{cube,ground,obstacles,limite:half});
+const enemigos=new EnemigosSistema(gl,{config:ENEMIGOS_CONFIG,ground,obstacles,limite:half,player,cube,upload,draw,avisar:notify});
+const combate=new CombateSistema({enemigos,proyectiles:flechas,player,personaje:terceraPersona,equipo:equipoJugador,permitido:()=>active&&!player.protected&&!VidaJugador.estaMuerto()});
+let ataquePendiente=null;
+window.addEventListener('escenario:uso-arma',evento=>{if(active&&!player.protected&&!VidaJugador.estaMuerto())ataquePendiente=evento.detail?.arma||null;});
 function render(time){const dt=Math.min(.04,(time-previous)/1000||0);previous=time;
  if(active)update(dt);
+ equipoJugador.actualizar(dt);
  const vista=terceraPersona.actualizar(player,dt,player.y-1.7);
+ if(active&&!player.protected&&!VidaJugador.estaMuerto()){
+  if(ataquePendiente)combate.ataqueDelJugador(ataquePendiente,vista);
+  flechas.actualizar(dt);
+  if(!VidaJugador.estaMuerto())enemigos.actualizar(dt,(a,b)=>combate.visionLibre(a,b));
+ }
+ ataquePendiente=null;
  if($('quiz').open&&solved&&returnAt&&time>=returnAt)closeQuiz();
  if($('quiz').open&&!solved){const left=Math.max(0,Math.ceil((deadline-time)/1000));$('shield').textContent='Escudo activo · '+left+' s · movimiento bloqueado';if(!left)answer(null);}
  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
@@ -441,10 +463,12 @@ function render(time){const dt=Math.min(.04,(time-previous)/1000||0);previous=ti
  gl.uniform1f(loc.distanceMax,460);gl.uniform3f(loc.offset,Math.sin(worldTime*.014)*9,0,Math.sin(worldTime*.01)*5);draw(clouds);
  gl.clear(gl.DEPTH_BUFFER_BIT);gl.uniform3f(loc.offset,0,0,0);gl.uniform1f(loc.distanceMax,quality.distance);
  for(const c of chunks.values())if(Math.hypot(c.x-player.x,c.z-player.z)<quality.distance+24){draw(c);if(qualityName!=='low')draw(c.detailMesh);}
- for(const b of boxes)if(Math.hypot(b.x-player.x,b.z-player.z)<quality.distance)draw(b.opened?b.openMesh:b);
+ for(const b of boxes)if(!b.supervivenciaOculta&&Math.hypot(b.x-player.x,b.z-player.z)<quality.distance)draw(b.opened?b.openMesh:b);
  botiquines.dibujar(draw,player,quality.distance);
  gl.useProgram(waterProgram);gl.uniform3f(waterLoc.camera,vista.x,vista.y,vista.z);gl.uniform3f(waterLoc.offset,0,0,0);gl.uniform2f(waterLoc.turn,vista.yaw,vista.pitch);gl.uniform1f(waterLoc.aspect,canvas.width/canvas.height);gl.uniform1f(waterLoc.distanceMax,quality.distance);gl.uniform1f(waterLoc.time,worldTime%120);draw(water,waterLoc);
  if(VidaJugador.debeDibujarPersonaje())terceraPersona.dibujar(program,loc);
+ enemigos.dibujar(program,loc,quality.distance);
+ flechas.dibujar(program,loc);
  frames++;if(time-fpsStart>=1000){$('fps').textContent=Math.round(frames*1000/(time-fpsStart))+' FPS';frames=0;fpsStart=time;}
  if(time-lastUI>120){minimap();lastUI=time;}
  requestAnimationFrame(render);

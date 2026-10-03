@@ -28,6 +28,9 @@ const btnIniciarJuego =
 const btnVolver =
     document.getElementById("btnVolver");
 
+const btnSupervivencia =
+    document.getElementById("btnSupervivencia");
+
 const detalleSala =
     document.getElementById("detalleSala");
 
@@ -220,6 +223,9 @@ btnIniciarJuego.addEventListener("click", () => {
     }
 
     restaurarConfiguracionJuego();
+    sessionStorage.removeItem("modoSupervivencia");
+    sessionStorage.removeItem("supervivenciaEstado");
+    sessionStorage.removeItem("juegoTiempoFin");
 
     const escenarioId = configuracionJuego?.escenario?.id
         || sessionStorage.getItem("juegoEscenario")
@@ -259,5 +265,21 @@ btnIniciarJuego.addEventListener("click", () => {
 btnVolver.addEventListener("click", () => {
 
     window.location.href = "../index.html";
+
+});
+
+btnSupervivencia.addEventListener("click", () => {
+
+    restaurarConfiguracionJuego();
+    sessionStorage.removeItem("juegoTiempoFin");
+    if (personajeSeleccionado) {
+        sessionStorage.setItem("juegoPersonaje", personajeSeleccionado);
+        sessionStorage.setItem("personajeSeleccionado", personajeSeleccionado);
+    }
+    if (salaSeleccionada) {
+        sessionStorage.setItem("juegoSala", JSON.stringify(salaSeleccionada));
+    }
+
+    window.location.href = "supervivencia_escenario.html";
 
 });

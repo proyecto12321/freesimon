@@ -23,7 +23,10 @@
             window.clearInterval(intervalo);
             intervalo = null;
         }
-        window.location.href = "../html/final.html";
+        const final = sessionStorage.getItem("modoSupervivencia") === "true"
+            ? "../html/final_supervivencia.html?tiempo=agotado"
+            : "../html/final.html";
+        window.location.href = final;
     }
 
     function actualizar() {

@@ -59,13 +59,13 @@
         top: 176px;
         left: 32px;
         z-index: 1000;
-        padding: 12px 15px;
-        border: 2px solid rgba(255,255,255,.25);
-        border-radius: 14px;
+        padding: 6px 8px;
+        border: 1px solid rgba(255,255,255,.25);
+        border-radius: 9px;
         background: rgba(17,24,39,.86);
         color: white;
-        font-family: Arial, sans-serif;
-        box-shadow: 0 6px 20px rgba(0,0,0,.25);
+        font: 10px Arial, sans-serif;
+        box-shadow: 0 3px 10px rgba(0,0,0,.25);
         pointer-events: none;
       }
 
@@ -75,12 +75,12 @@
 
       #fs-vida-corazones {
         display: flex;
-        gap: 5px;
+        gap: 3px;
       }
 
       #fs-vida-corazones svg {
-        width: 27px;
-        height: 27px;
+        width: 18px;
+        height: 18px;
         fill: #fa4760;
         stroke: #ffb7c1;
         stroke-width: 1.5;
@@ -93,8 +93,8 @@
 
       #fs-vida-estado {
         display: block;
-        margin-top: 7px;
-        font-size: 12px;
+        margin-top: 3px;
+        font-size: 10px;
         text-align: center;
       }
 
@@ -159,7 +159,7 @@
         #fs-vida-panel {
           top: 158px;
           left: 14px;
-          padding: 8px 10px;
+          padding: 5px 7px;
         }
 
         #fs-vida-corazones {
@@ -167,8 +167,8 @@
         }
 
         #fs-vida-corazones svg {
-          width: 21px;
-          height: 21px;
+          width: 16px;
+          height: 16px;
         }
       }
     `;

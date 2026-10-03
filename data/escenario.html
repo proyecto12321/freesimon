@@ -142,6 +142,10 @@
 
         <div class="performance">
 
+            <span id="objective">
+                0 / 5 cajas
+            </span>
+
             <span id="fps">
                 — FPS
             </span>
@@ -348,24 +352,24 @@
 
     <!-- Configuración del escenario -->
     <script src="desierto.config.js?v=preguntas-docente"></script>
-
-    <!-- Sistema de personajes -->
     <script src="personaje.js?v=personaje-3d-fix3"></script>
-
-    <!-- Vida: debe cargarse antes del motor del escenario -->
+    <script src="proyectiles_arco.js?v=aim-from-weapon-1"></script>
     <script src="vida_jugador_completo.js?v=1"></script>
-
-    <!-- Renderizador 3D y equipo del personaje -->
-    <script src="personajeD_completo.js?v=1"></script>
-
+    <script src="enemigos.js?v=npc-1"></script>
+    <script src="combate.js?v=local-combat-3"></script>
+    <script src="personajeD_completo.js?v=orientation-fix-2"></script>
+    <script src="enemigos.config.js?v=npc-1"></script>
     <!-- Cajas de curación compartidas -->
     <script src="botiquin_jugador.js?v=botiquines-v1"></script>
 
     <!-- Temporizador de evaluación -->
     <script src="../js/temporizador_juego.js?v=temporizador-v1"></script>
 
+    <!-- Reglas de la modalidad Supervivencia -->
+    <script src="../js/supervivencia_runtime.js?v=supervivencia-v1"></script>
+
     <!-- Motor del escenario -->
-    <script src="escenario.js?v=equipo-completo-1"></script>
+    <script src="escenario.js?v=local-combat-2"></script>
 </body>
 
 </html>

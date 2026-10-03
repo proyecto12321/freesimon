@@ -69,7 +69,7 @@
   let weatherMode = climate.modo, weatherTime = 0, storm = 0, worldTime = 0, weatherPhase = 'clear';
   const random = () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
   const half = config.tamano / 2, tile = 4, chunkSize = 32, chunks = new Map(), obstacles = [], boxes = [];
-  const player = { x: config.inicio.x, z: config.inicio.z, y: 0, yaw: 0, pitch: -.08, jump: 0, vy: 0, protected: false };
+  const player = { x: config.inicio.x, z: config.inicio.z, y: 0, yaw: 0, pitch: 0, jump: 0, vy: 0, protected: false };
   let active = false, points = 0, inventory = [], keys = new Set(), nearest = null, questionBox = null, deadline = 0, solved = false, returnAt = 0;
 
   //implementando vida
@@ -123,7 +123,7 @@ uniform mediump float distanceMax;
  void main(){
  vec3 p=position+offset-camera;
  float c=cos(turn.x),s=sin(turn.x);
- vec3 q=vec3(c*p.x+s*p.z,p.y,-s*p.x+c*p.z);
+ vec3 q=vec3(c*p.x-s*p.z,p.y,s*p.x+c*p.z);
  c=cos(turn.y);s=sin(turn.y);
  q=vec3(q.x,c*q.y+s*q.z,-s*q.y+c*q.z);
  float d=-q.z; float n=0.08; float f=distanceMax+40.0;
@@ -145,7 +145,7 @@ uniform mediump float distanceMax;
  void main(){
  vec2 p=uv*2.0-1.0;vec3 q=normalize(vec3(p.x*aspect/1.3,p.y/1.3,-1.0));
  float c=cos(turn.y),s=sin(turn.y);q=vec3(q.x,c*q.y-s*q.z,s*q.y+c*q.z);
- c=cos(turn.x);s=sin(turn.x);vec3 ray=vec3(c*q.x-s*q.z,q.y,s*q.x+c*q.z);
+ c=cos(turn.x);s=sin(turn.x);vec3 ray=vec3(c*q.x+s*q.z,q.y,-s*q.x+c*q.z);
  float elevation=max(0.0,ray.y);
  vec3 sky=mix(vec3(0.79,0.83,0.77),vec3(0.29,0.61,0.78),smoothstep(0.0,0.8,elevation));
  float sun=dot(ray,normalize(vec3(-0.42,0.52,-0.65)));
@@ -339,7 +339,7 @@ uniform mediump float distanceMax;
   $('returnRooms').onclick = () => { release(); window.location.href = '../html/panel_sala.html'; };
   document.addEventListener('pointerlockchange', () => { if (document.pointerLockElement !== canvas && active && !$('quiz').open) pause(); });
   canvas.addEventListener('mousedown', e => { if (active && e.button === 0) drag = true; }); addEventListener('mouseup', () => drag = false);
-  addEventListener('mousemove', e => { if (!active || $('quiz').open) return; if (document.pointerLockElement === canvas || drag) { player.yaw -= e.movementX * .0025; player.pitch = Math.max(-1.35, Math.min(1.35, player.pitch - e.movementY * .0025)); } });
+  addEventListener('mousemove', e => { if (!active || $('quiz').open) return; if (document.pointerLockElement === canvas || drag) { player.yaw -= e.movementX * .0025; player.pitch = Math.max(-.85, Math.min(.55, player.pitch - e.movementY * .0025)); } });
   addEventListener('blur', () => { keys.clear(); if (active) pause(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden && active) pause(); });
   const movement = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'ShiftLeft', 'ShiftRight'];
@@ -414,14 +414,14 @@ uniform mediump float distanceMax;
   $('closeQuiz').onclick = closeQuiz; $('quiz').addEventListener('cancel', e => { e.preventDefault(); closeQuiz(); });
   function update(dt) {
     if (keys.has('ArrowLeft')) player.yaw += dt * 1.6; if (keys.has('ArrowRight')) player.yaw -= dt * 1.6;
-    if (keys.has('ArrowUp')) player.pitch = Math.min(1.35, player.pitch + dt); if (keys.has('ArrowDown')) player.pitch = Math.max(-1.35, player.pitch - dt);
+    if (keys.has('ArrowUp')) player.pitch = Math.min(.55, player.pitch + dt); if (keys.has('ArrowDown')) player.pitch = Math.max(-.85, player.pitch - dt);
     let f = (keys.has('KeyW') ? 1 : 0) - (keys.has('KeyS') ? 1 : 0), s = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0), len = Math.hypot(f, s) || 1;
     const speed = (keys.has('ShiftLeft') || keys.has('ShiftRight') ? 8 : 4.5) * dt;
     const dx = (-Math.sin(player.yaw) * f + Math.cos(player.yaw) * s) / len * speed, dz = (-Math.cos(player.yaw) * f - Math.sin(player.yaw) * s) / len * speed;
     if (allowed(player.x + dx, player.z)) player.x += dx; if (allowed(player.x, player.z + dz)) player.z += dz;
     if (player.jump > 0 || player.vy > 0) { player.vy -= 13 * dt; player.jump = Math.max(0, player.jump + player.vy * dt); if (player.jump === 0) player.vy = 0; }
     player.y += (ground(player.x, player.z) + 1.7 + player.jump - player.y) * Math.min(1, dt * 18);
-    const curacion = botiquines.recoger(player, player.y - 1.7, VidaJugador.recuperarCorazon);
+    const curacion = botiquines.recoger(player, player.y - 1.7, () => (VidaJugador.recuperarCorazon || VidaJugador.recuperarCorazones)(1));
     if (curacion !== null) notify(curacion ? 'Recuperaste un corazón.' : 'Ya tienes todos los corazones.');
     nearest = null; let min = 3.7; for (const b of boxes) { const d = Math.hypot(player.x - b.x, player.z - b.z); if (!b.opened && d < min) { nearest = b; min = d; } }
     $('hint').hidden = !nearest; if (nearest) $('hint').textContent = '[ E ] ' + (nearest.tipo === 'pregunta' ? 'Responder pregunta · escudo activo al abrir' : 'Abrir caja de equipamiento');
@@ -458,7 +458,7 @@ uniform mediump float distanceMax;
 
   canvas.addEventListener('mousedown', evento => {
     if (evento.button === 0 && document.pointerLockElement === canvas &&
-        active && !player.protected && !VidaJugador.estaMuerto()) {
+      active && !player.protected && !VidaJugador.estaMuerto()) {
       equipoJugador.usarArma();
     }
   });
@@ -488,6 +488,24 @@ uniform mediump float distanceMax;
   });//final de la integracion
 
 
+  // Modalidad local con enemigos: una sola simulación por escenario.
+  const flechas = new FlechasEscenario(gl, {cube, ground, obstacles, limite: half});
+  const enemigos = new EnemigosSistema(gl, {
+    config: ENEMIGOS_CONFIG, ground, obstacles, limite: half,
+    player, cube, upload, draw, avisar: notify
+  });
+  const combate = new CombateSistema({
+    enemigos, proyectiles: flechas, player, personaje: terceraPersona,
+    equipo: equipoJugador,
+    permitido: () => active && !player.protected && !VidaJugador.estaMuerto()
+  });
+  let ataquePendiente = null;
+  window.addEventListener('escenario:uso-arma', evento => {
+    if (active && !player.protected && !VidaJugador.estaMuerto()) {
+      ataquePendiente = evento.detail?.arma || null;
+    }
+  });
+
   function render(time) {
     const dt = Math.min(.04, (time - previous) / 1000 || 0); previous = time;
     if (active) { update(dt); updateWeather(dt); }
@@ -501,6 +519,15 @@ uniform mediump float distanceMax;
       dt,
       player.y - 1.7
     );//fin de integración
+
+    if (active && !player.protected && !VidaJugador.estaMuerto()) {
+      // Resolver primero el ataque local para que un enemigo eliminado no ataque.
+      if (ataquePendiente) combate.ataqueDelJugador(ataquePendiente, vista);
+      flechas.actualizar(dt);
+      if (!VidaJugador.estaMuerto()) enemigos.actualizar(dt, (a,b) => combate.visionLibre(a,b));
+    }
+    ataquePendiente = null;
+
 
     if ($('quiz').open && solved && returnAt && time >= returnAt) closeQuiz();
     if ($('quiz').open && !solved) { const left = Math.max(0, Math.ceil((deadline - time) / 1000)); $('shield').textContent = 'Escudo activo · ' + left + ' s · movimiento bloqueado'; if (!left) answer(null); }
@@ -556,6 +583,8 @@ uniform mediump float distanceMax;
     if (VidaJugador.debeDibujarPersonaje()) {
       terceraPersona.dibujar(program, loc);
     }
+    enemigos.dibujar(program, loc, visibleDistance);
+    flechas.dibujar(program, loc);
     if (storm > .005) {
       gl.disable(gl.DEPTH_TEST); gl.depthMask(false); gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       screenPass(dustProgram, dustLoc); gl.uniform1f(dustLoc.storm, storm); gl.uniform1f(dustLoc.time, worldTime % 120); gl.uniform1f(dustLoc.aspect, canvas.width / canvas.height); gl.drawArrays(gl.TRIANGLES, 0, 6);

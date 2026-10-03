@@ -1,0 +1,51 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    min-height: 100vh;
+    margin: 0;
+    place-items: center;
+    padding: 24px;
+    color: #fff;
+    background: linear-gradient(rgba(5, 14, 20, .50), rgba(5, 14, 20, .74)), url("../img/fondo1.png") center / cover no-repeat fixed;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.transicion {
+    width: min(100%, 650px);
+    padding: 48px 30px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 24px;
+    background: rgba(10, 23, 30, .78);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .38);
+}
+
+.transicion > span {
+    color: #b9e9ad;
+    font-weight: 800;
+    letter-spacing: .2em;
+}
+
+h1 {
+    margin: 16px 0;
+    font-size: clamp(2rem, 8vw, 3.6rem);
+}
+
+p {
+    margin-bottom: 28px;
+    color: #e5eeee;
+}
+
+button {
+    padding: 12px 24px;
+    border: 0;
+    border-radius: 9px;
+    color: #173019;
+    background: #b8e7a6;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}

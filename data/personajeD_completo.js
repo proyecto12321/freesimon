@@ -10,6 +10,7 @@
     class PersonajeTerceraPersona {
         constructor(gl, opciones = {}) {
             this.gl = gl;
+            this.soloModelo = opciones.soloModelo ?? false;
 
             // Puedes cambiar la distancia al crear la instancia.
             this.distancia = opciones.distancia ?? 8;
@@ -30,7 +31,7 @@
             }
 
             // Tu selector guarda el nombre. También admitimos un ID.
-            const elegido =
+            const elegido = opciones.modeloId ||
                 sessionStorage.getItem("personajeSeleccionado") ||
                 sessionStorage.getItem("juegoPersonaje");
 
@@ -237,16 +238,12 @@
                 this.giro = player.yaw;
             }
 
-            // Orientar el cuerpo hacia la dirección de movimiento.
-            const destino = andando
-                ? Math.atan2(-dx, -dz)
-                : this.giro;
-
+            // La orientación corporal responde al movimiento igual con o sin arma.
+            const destino = andando ? Math.atan2(-dx, -dz) : this.giro;
             const diferencia = Math.atan2(
                 Math.sin(destino - this.giro),
                 Math.cos(destino - this.giro)
             );
-
             this.giro += diferencia * Math.min(1, dt * 14);
 
             this.paso += (
@@ -260,13 +257,15 @@
             this.anterior = { x: player.x, z: player.z };
             this.posicion = { x: player.x, y: pies, z: player.z };
 
+            // Los NPC animan su cuerpo sin calcular una cámara por enemigo.
+            if (this.soloModelo) return null;
+
             // La cámara mira hacia el torso desde detrás del jugador.
             const yaw = player.yaw;
 
-            const pitch = Math.max(
-                -0.85,
-                Math.min(0.12, player.pitch - 0.22)
-            );
+            // Mismo límite en entrada y cámara, sin inclinación oculta acumulada.
+            const pitch = Math.max(-0.85, Math.min(0.55, player.pitch));
+            player.pitch = pitch;
 
             const objetivo = {
                 x: player.x,
@@ -382,6 +381,22 @@
             if (estadoEquipo?.escudoActivo) this.dibujarEscudo(loc);
         }
 
+        // Punto de salida en la flecha del arco, transformado como el equipo.
+        obtenerOrigenFlecha() {
+            if (!this.posicion) return null;
+            const estado=this.equipo?.getState?.() || {};
+            const a=this.anguloEquipo(estado), ca=Math.cos(a), sa=Math.sin(a);
+            const ajuste=-1.25, cy=Math.cos(ajuste), sy=Math.sin(ajuste);
+            // Punta del modelo de flecha colocado sobre el arco.
+            const ly=1*cy-(-68)*sy, lz=1*sy+(-68)*cy;
+            const x=this.mano.x*this.escala;
+            const dy=this.mano.y+ly-this.mano.pivote, dz=this.mano.z+lz;
+            const y=(this.mano.pivote+dy*ca-dz*sa)*this.escala;
+            const z=(dy*sa+dz*ca)*this.escala;
+            const c=Math.cos(this.giro), s=Math.sin(this.giro);
+            return {x:this.posicion.x+c*x+s*z,y:this.posicion.y+y,z:this.posicion.z-s*x+c*z};
+        }
+
         // La mano y el objeto comparten el mismo pivote y ángulo del brazo.
         anguloEquipo(estado) {
             if (estado.curando) return 1.1 + Math.sin((estado.progresoCuracion ?? 0) * Math.PI * 4) * 0.08;
@@ -391,7 +406,7 @@
         }
 
         // Modelos de bloques locales: no se descargan imágenes ni modelos externos.
-        crearEquipo(nombre) {
+        crearEquipo(nombre, ocultarFlecha = false) {
             const vertices = [];
             const bloque = (x, y, z, w, h, d, color) => {
                 const rgb = [1, 3, 5].map(i => parseInt(color.slice(i, i + 2), 16) / 255);
@@ -435,8 +450,10 @@
                     bloque(0, lado * 57, 25, 9, 9, 9, "#ad793f");
                 }
                 bloque(0, 0, 29, 2, 114, 2, "#f5e8b9");
-                bloque(0, 1, -15, 3, 3, 100, "#e0bc7a");
-                bloque(0, 1, -68, 8, 6, 10, "#b8d4df");
+                if (!ocultarFlecha) {
+                    bloque(0, 1, -15, 3, 3, 100, "#e0bc7a");
+                    bloque(0, 1, -68, 8, 6, 10, "#b8d4df");
+                }
             } else if (nombre === "Pistola" || nombre === "Metralleta") {
                 bloque(0, 0, 0, 13, 29, 14, "#483e35");
                 bloque(0, 17, -15, 17, 17, nombre === "Pistola" ? 49 : 79, "#596b76");
@@ -472,9 +489,11 @@
             const nombre = estado?.objetoEnMano;
             if (!nombre) return;
             const gl = this.gl;
-            if (nombre !== this.objetoDibujado) {
-                this.objetoDibujado = nombre;
-                this.verticesEquipo = this.crearEquipo(nombre);
+            const ocultarFlecha = nombre === 'Arco' && (estado.usandoArma || estado.progresoUso > 0);
+            const clave = nombre + (ocultarFlecha ? ':disparando' : '');
+            if (clave !== this.objetoDibujado) {
+                this.objetoDibujado = clave;
+                this.verticesEquipo = this.crearEquipo(nombre, ocultarFlecha);
                 this.datosEquipo = new Float32Array(this.verticesEquipo.length);
                 gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferEquipo);
                 gl.bufferData(gl.ARRAY_BUFFER, this.datosEquipo.byteLength, gl.DYNAMIC_DRAW);
@@ -531,6 +550,60 @@
         }
     }
 
+    class VistaArmasJugador {
+        constructor(inventario = []) {
+            this.inventario = inventario;
+            this.armasPermitidas = ['Espada', 'Hacha', 'Arco', 'Pistola', 'Metralleta'];
+            this.arma = null;
+            this.visible = false;
+            this.uso = 0;
+            this.duracionUso = 0;
+        }
+
+        recoger(nombre) {
+            if (!this.armasPermitidas.includes(nombre)) return false;
+            this.arma = nombre;
+            this.visible = true;
+            this.uso = 0;
+            return true;
+        }
+
+        manejarTecla(evento) {
+            if (evento.code === 'KeyQ') {
+                if (this.arma) this.visible = !this.visible;
+            } else if (evento.code === 'KeyF') {
+                if (this.arma) {
+                    this.visible = true;
+                    this.duracionUso = ['Pistola', 'Metralleta'].includes(this.arma) ? 0.22 : 0.55;
+                    this.uso = this.duracionUso;
+                }
+            } else if (/^Digit[1-5]$/.test(evento.code)) {
+                const armas = [...new Set(this.inventario.filter(nombre => this.armasPermitidas.includes(nombre)))];
+                const nombre = armas[Number(evento.code.slice(-1)) - 1];
+                if (nombre) {
+                    this.arma = nombre;
+                    this.visible = true;
+                    this.uso = 0;
+                }
+            } else {
+                return false;
+            }
+            evento.preventDefault();
+            return true;
+        }
+
+        actualizar(dt) {
+            this.uso = Math.max(0, this.uso - Math.max(0, dt));
+        }
+
+        getState() {
+            return {
+                objetoEnMano: this.visible ? this.arma : null,
+                progresoUso: this.uso > 0 ? 1 - this.uso / this.duracionUso : 0
+            };
+        }
+    }
+
     // Inventario, vida y acciones compartidos por los seis mapas, sin duplicar reglas.
     class EquipoJugador {
         constructor({ inventario = [], avisar = () => {}, puedeUsar = () => false,
@@ -578,31 +651,32 @@
             // Panel de equipo independiente: no cambia la estructura del HTML.
             const estilo = document.createElement('style');
             estilo.textContent = `
-              #equipmentHUD {position:fixed;bottom:16px;left:50%;right:auto;z-index:900;
-                display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;
-                transform:translateX(-50%);width:min(270px,calc(100vw - 32px));
-                padding:8px;border-radius:10px;
-                background:rgba(17,24,39,.9);color:#fff;font:11px Arial,sans-serif;}
-              #equipmentHUD svg {width:24px;height:24px;fill:none;stroke:currentColor;
+              #equipmentHUD {position:fixed;top:228px;left:32px;right:auto;z-index:900;
+                display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;
+                width:min(225px,calc(100vw - 64px));max-height:calc(100vh - 240px);
+                overflow:auto;padding:6px;border-radius:9px;
+                background:rgba(17,24,39,.9);color:#fff;font:9px Arial,sans-serif;}
+              #equipmentHUD svg {width:18px;height:18px;fill:none;stroke:currentColor;
                 stroke-width:3;flex-shrink:0;}
               #equipmentHUD .equipment-weapon {grid-column:1/-1;display:flex;
-                align-items:center;gap:6px;margin:0;}
+                align-items:center;gap:4px;margin:0;}
               #equipmentHUD .equipment-medkit {display:flex;align-items:center;
-                justify-content:space-between;gap:4px;margin:0;min-width:0;}
+                justify-content:space-between;gap:3px;margin:0;min-width:0;}
               #equipmentHUD small,#equipmentHUD strong,#equipmentHUD span {display:block;}
-              #equipmentHUD small {font-size:8px;}
-              #equipmentHUD .equipment-weapon span,#equipmentHUD .equipment-medkit > span {
-                font-size:10px;}
-              #equipmentHUD button {padding:4px 6px;margin:1px;border:1px solid #687890;
-                border-radius:6px;background:#30435e;color:white;cursor:pointer;}
-              #equipmentHUD .equipment-medkit button {font-size:9px;}
+              #equipmentHUD small {font-size:7px;}
+              #equipmentHUD #weaponStatus,#equipmentHUD #shieldStatus {display:none;}
+              #equipmentHUD .equipment-medkit > span {font-size:8px;}
+              #equipmentHUD button {padding:2px 4px;margin:1px;border:1px solid #687890;
+                border-radius:5px;background:#30435e;color:white;cursor:pointer;font-size:8px;}
               #equipmentHUD button:disabled {opacity:.45;cursor:default;}
               #equipmentHUD button[aria-pressed="true"] {background:#356a53;}
               #equipmentHUD progress,#weaponChoices {grid-column:1/-1;width:100%;}
-              #equipmentHUD #weaponChoices button {font-size:9px;}
+              #equipmentHUD #weaponChoices {display:flex;flex-wrap:wrap;}
+              #equipmentHUD #weaponChoices button {font-size:8px;}
               #equipmentHUD #useWeapon {grid-column:1/-1;justify-self:start;}
-              @media(max-width:480px) {
-                #equipmentHUD {bottom:82px;width:min(250px,calc(100vw - 20px));}
+              @media(max-width:650px) {
+                #equipmentHUD {top:208px;left:14px;width:min(210px,calc(100vw - 28px));
+                  max-height:calc(100vh - 220px);}
               }
             `;
             document.head.appendChild(estilo);
@@ -855,5 +929,6 @@
     }
 
     window.EquipoJugador = EquipoJugador;
+    window.VistaArmasJugador = VistaArmasJugador;
     window.PersonajeTerceraPersona = PersonajeTerceraPersona;
 })();

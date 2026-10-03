@@ -29,14 +29,14 @@
     const estilo = document.createElement('style');
     estilo.textContent = `
       #fs-vida-panel {position:fixed;top:176px;left:32px;z-index:1000;
-        padding:12px 15px;border:2px solid #ffffff40;border-radius:14px;
-        background:rgba(17,24,39,.86);color:white;font:12px Arial,sans-serif;
-        box-shadow:0 6px 20px #0004;pointer-events:none;}
+        padding:6px 8px;border:1px solid #ffffff40;border-radius:9px;
+        background:rgba(17,24,39,.86);color:white;font:10px Arial,sans-serif;
+        box-shadow:0 3px 10px #0004;pointer-events:none;}
       .overlay {z-index:1001;}
-      #fs-vida-corazones {display:flex;gap:5px;}
-      #fs-vida-corazones svg {width:27px;height:27px;fill:#fa4760;stroke:#ffb7c1;stroke-width:1.5;}
+      #fs-vida-corazones {display:flex;gap:3px;}
+      #fs-vida-corazones svg {width:18px;height:18px;fill:#fa4760;stroke:#ffb7c1;stroke-width:1.5;}
       #fs-vida-corazones svg.vacio {fill:#354052;stroke:#8792a3;}
-      #fs-vida-estado {display:block;margin-top:7px;text-align:center;}
+      #fs-vida-estado {display:block;margin-top:3px;text-align:center;}
       #fs-vida-panel.critico #fs-vida-corazones {animation:fs-vida-latido 1.2s ease-in-out infinite;}
       @keyframes fs-vida-latido {50% {opacity:.5;}}
       #fs-vida-destello {position:fixed;inset:0;z-index:1100;pointer-events:none;
@@ -50,6 +50,10 @@
       #fs-vida-derrota h2 {margin-top:0;}
       @media(prefers-reduced-motion:reduce) {
         #fs-vida-panel.critico #fs-vida-corazones {animation:none;}
+      }
+      @media(max-width:650px) {
+        #fs-vida-panel {top:158px;left:14px;padding:5px 7px;}
+        #fs-vida-corazones svg {width:16px;height:16px;}
       }
     `;
     document.head.appendChild(estilo);

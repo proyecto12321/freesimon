@@ -1,0 +1,48 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    min-height: 100vh;
+    margin: 0;
+    place-items: center;
+    padding: 24px;
+    color: #fff;
+    background: linear-gradient(rgba(4, 17, 24, .66), rgba(4, 17, 24, .76)), url("../img/fondo1.png") center / cover fixed;
+    font-family: Arial, sans-serif;
+}
+
+.inicio-supervivencia {
+    width: min(100%, 560px);
+    padding: 44px 36px;
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 22px;
+    background: rgba(15, 31, 38, .88);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+    text-align: center;
+}
+
+.sello {
+    color: #a5e6a1;
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .18em;
+}
+
+h1 {
+    margin: 14px 0;
+    font-size: clamp(2.4rem, 9vw, 4rem);
+}
+
+p {
+    min-height: 3em;
+    color: #e1e9e9;
+    line-height: 1.6;
+}
+
+a {
+    display: inline-block;
+    margin-top: 14px;
+    color: #c5ecc2;
+}
