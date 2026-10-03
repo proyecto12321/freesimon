@@ -45,7 +45,7 @@
         }
         if(elegido)this.enemigos.eliminar(elegido);
       } else if(['Arco','Pistola','Metralleta'].includes(arma)) {
-        const mira={x:j.x,y:j.y,z:j.z,yaw:j.yaw,pitch:j.pitch};
+        const mira={x:j.x,y:j.y,z:j.z,yaw:this.personaje.giro,pitch:j.pitch};
         this.proyectiles.disparar(this.personaje.obtenerOrigenFlecha(),mira,
           {dueno:'jugador',tipo:arma==='Arco'?'flecha':'bala'});
       }
