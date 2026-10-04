@@ -697,3 +697,60 @@ body.pantalla-configuracion .configuracion-layout > .contenedor > .panel:not(.pa
         height: 92px;
     }
 }
+/* =================================
+   TEMPORIZADOR Y ACCIONES EXCEL
+   Misma tarjeta, tipografía y foco que el resto del panel.
+================================= */
+.pantalla-configuracion .selector-tiempo {
+    padding: 18px;
+    border: 1px solid #ddd;
+    border-left: 4px solid #39765c;
+    border-radius: 10px;
+    background: #fafafa;
+    transition: background .2s, border-color .2s;
+}
+.pantalla-configuracion .selector-tiempo:hover,
+.pantalla-configuracion .selector-tiempo:focus-within {
+    background: #f0f7f2;
+    border-color: #39765c;
+}
+.pantalla-configuracion .selector-tiempo strong { font-size: 18px; }
+.pantalla-configuracion .selector-tiempo small { font-size: 14px; line-height: 1.4; }
+.pantalla-configuracion .selector-tiempo select {
+    min-height: 44px;
+    max-width: 100%;
+    border: 1px solid #8ca997;
+    border-radius: 8px;
+    background: #fff;
+    color: #263445;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.pantalla-configuracion .selector-tiempo select:focus-visible,
+.pantalla-configuracion .opcion:focus-visible {
+    outline: 3px solid #527ba8;
+    outline-offset: 3px;
+}
+.acciones-excel { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pantalla-configuracion .opcion-excel { border-color: #a9c4b4; background: #f1f8f3; }
+.pantalla-configuracion .opcion-excel:hover { background: #e3f0e8; border-color: #39765c; }
+.opcion-excel .titulo-opcion { color: #28583f; font-size: 17px; }
+.opcion-excel .detalle-opcion { line-height: 1.45; }
+.pantalla-configuracion button:disabled { opacity: .6; cursor: wait; }
+.ayuda-excel { color: #657383; font-size: 12px; line-height: 1.5; }
+.mensaje-excel { font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.mensaje-excel:empty { display: none; }
+.mensaje-excel:not(:empty) { padding: 10px 12px; border-radius: 8px; background: #edf2f7; color: #33465c; }
+.mensaje-excel[data-tipo="error"] { background: #fff0ee; color: #a82e24; }
+.mensaje-excel[data-tipo="aviso"] { background: #fff7df; color: #785600; }
+.mensaje-excel[data-tipo="exito"] { background: #eaf5ee; color: #28583f; }
+@media (max-width: 850px) {
+    .configuracion-layout { grid-template-columns: 1fr; }
+    .panel-escenarios { min-height: auto; }
+}
+@media (max-width: 500px) {
+    .pantalla-configuracion .selector-tiempo { align-items: stretch; flex-direction: column; gap: 10px; }
+    .pantalla-configuracion .selector-tiempo select { width: 100%; }
+    .acciones-excel { grid-template-columns: 1fr; }
+}

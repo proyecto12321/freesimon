@@ -237,7 +237,9 @@ btnIniciarJuego.addEventListener("click", () => {
         cielo: "../data/cielo.html",
         ciudad: "../data/ciudad.html",
         inframundo: "../data/inframundo.html",
-        mar: "../data/mar.html"
+        mar: "../data/mar.html",
+        hielo: "../data/hielo.html",
+        castillo: "../data/castillo.html"
     };
 
     if (!escenarioId) {

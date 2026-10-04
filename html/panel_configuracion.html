@@ -9,7 +9,7 @@
 
     <title>Panel de administración docente - FreeSIMON</title>
 
-    <link rel="stylesheet" href="../css/panel_configuracion.css?v=temporizador-evaluacion">
+    <link rel="stylesheet" href="../css/panel_configuracion.css?v=excel-preguntas-1">
     <link rel="stylesheet" href="../css/tema_bloques.css">
 
 </head>
@@ -75,6 +75,23 @@
                     </button>
 
 
+                    <!-- EXCEL: plantilla con preguntas y respuesta correcta -->
+                    <div class="acciones-excel" aria-label="Preguntas en Excel">
+                        <button id="btnExportarExcel" class="opcion opcion-excel" type="button">
+                            <span class="titulo-opcion">Exportar Excel</span>
+                            <span class="detalle-opcion">Descargar preguntas o una plantilla para completar.</span>
+                        </button>
+                        <button id="btnImportarExcel" class="opcion opcion-excel" type="button">
+                            <span class="titulo-opcion">Importar Excel</span>
+                            <span class="detalle-opcion">Cargar preguntas desde un archivo .xlsx.</span>
+                        </button>
+                    </div>
+                    <input id="archivoPreguntasExcel" type="file"
+                        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+                    <p class="ayuda-excel">Configura primero la cantidad. Usa cuatro alternativas y marca la correcta
+                        con A, B, C o D. La importación reemplaza las preguntas registradas.</p>
+                    <p id="mensajeExcel" class="mensaje-excel" role="status" aria-live="polite"></p>
+
                     <!-- CREAR GRUPOS -->
 
                     <button id="btnCrearGrupos" class="opcion">
@@ -104,8 +121,7 @@
 
                     </button>
 
-                    <p id="mensajeCargarJuego" class="mensaje-cargar-juego" role="status"
-                        aria-live="polite"></p>
+                    <p id="mensajeCargarJuego" class="mensaje-cargar-juego" role="status" aria-live="polite"></p>
 
 
                 </div>
@@ -145,7 +161,7 @@
                         Número de preguntas
                     </label>
 
-                    <input type="number" id="cantidadPreguntas" min="1" max="30" placeholder="Máximo 30">
+                    <input type="number" id="cantidadPreguntas" min="1" max="40" placeholder="Máximo 40">
 
 
                     <p id="mensajePreguntas" class="mensaje"></p>
@@ -181,7 +197,7 @@
         </aside>
     </div>
 
-    <script src="../js/panel_configuracion.js?v=temporizador-evaluacion"></script>
+    <script src="../js/panel_configuracion.js?v=excel-preguntas-1"></script>
 
 </body>
 

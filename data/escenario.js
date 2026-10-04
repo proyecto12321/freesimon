@@ -281,6 +281,7 @@ uniform mediump float distanceMax;
     return a;
   }
   let siguientePregunta = 0;
+  let modoSupervivencia = false;
   for (const item of config.cajas) {
     const b = { ...item, y: ground(item.x, item.z), opened: false };
     if (b.tipo === 'pregunta') {
@@ -291,6 +292,16 @@ uniform mediump float distanceMax;
     b.openMesh = upload(chestGeometry(b, true));
     boxes.push(b);
     obstacles.push({ x: b.x, z: b.z, r: 1.05, height: 1.5, box: b });
+  }
+
+  try {
+    modoSupervivencia = Supervivencia.prepararCajas(
+      'desierto',
+      boxes.filter(b => b.tipo === 'pregunta')
+    );
+  } catch (error) {
+    fail(error.message);
+    return;
   }
   const botiquines = BotiquinesJugador.crear({
     cube, upload, ground, obstacles, boxes, inicio: config.inicio,
@@ -350,7 +361,7 @@ uniform mediump float distanceMax;
   function interact() {
     if (!nearest || !active) return;
     const caja = nearest;
-
+    //
     if (caja.tipo === 'equipo') {
       equipoJugador.recoger(caja);
       return;
@@ -391,7 +402,13 @@ uniform mediump float distanceMax;
     returnAt = performance.now() + 3000;
     const pregunta = preguntasDocente[questionBox.pregunta];
     const correcta = indiceSeleccionado === pregunta.correcta;
-    questionBox.opened = true;
+    if (!modoSupervivencia || correcta) {
+      questionBox.opened = true;
+    }
+
+    if (modoSupervivencia) {
+      Supervivencia.registrarRespuesta(questionBox, correcta);
+    }
 
     if (correcta) points += 100;
     $('score').textContent = points + ' puntos';
@@ -410,7 +427,22 @@ uniform mediump float distanceMax;
       puntos: points
     });
   }
-  function closeQuiz() { if (!solved) answer(null); $('quiz').close(); player.protected = false; emit('escenario:proteccion', { activa: false }); questionBox = null; resume(); }
+  function closeQuiz() {
+    if (!solved) answer(null);
+
+    $('quiz').close();
+    player.protected = false;
+
+    emit('escenario:proteccion', { activa: false });
+
+    questionBox = null;
+
+    if (modoSupervivencia && Supervivencia.alCerrarPregunta()) {
+      return;
+    }
+
+    resume();
+  }
   $('closeQuiz').onclick = closeQuiz; $('quiz').addEventListener('cancel', e => { e.preventDefault(); closeQuiz(); });
   function update(dt) {
     if (keys.has('ArrowLeft')) player.yaw += dt * 1.6; if (keys.has('ArrowRight')) player.yaw -= dt * 1.6;
@@ -423,7 +455,22 @@ uniform mediump float distanceMax;
     player.y += (ground(player.x, player.z) + 1.7 + player.jump - player.y) * Math.min(1, dt * 18);
     const curacion = botiquines.recoger(player, player.y - 1.7, () => (VidaJugador.recuperarCorazon || VidaJugador.recuperarCorazones)(1));
     if (curacion !== null) notify(curacion ? 'Recuperaste un corazón.' : 'Ya tienes todos los corazones.');
-    nearest = null; let min = 3.7; for (const b of boxes) { const d = Math.hypot(player.x - b.x, player.z - b.z); if (!b.opened && d < min) { nearest = b; min = d; } }
+    nearest = null;
+    let min = 3.7;
+
+    for (const b of boxes) {
+      if (b.supervivenciaOculta) continue;
+
+      const d = Math.hypot(
+        player.x - b.x,
+        player.z - b.z
+      );
+
+      if (!b.opened && d < min) {
+        nearest = b;
+        min = d;
+      }
+    }
     $('hint').hidden = !nearest; if (nearest) $('hint').textContent = '[ E ] ' + (nearest.tipo === 'pregunta' ? 'Responder pregunta · escudo activo al abrir' : 'Abrir caja de equipamiento');
   }
   const map = $('mapa').getContext('2d');
@@ -431,7 +478,22 @@ uniform mediump float distanceMax;
     map.fillStyle = '#d6b078'; map.fillRect(0, 0, 160, 160); const mx = x => (x / config.tamano + .5) * 160;
     map.strokeStyle = '#ac8e62'; map.lineWidth = .5; for (let i = 0; i <= 160; i += 20) { map.beginPath(); map.moveTo(i, 0); map.lineTo(i, 160); map.moveTo(0, i); map.lineTo(160, i); map.stroke(); }
     map.fillStyle = '#798050'; for (const o of obstacles) { map.fillRect(mx(o.x) - .6, mx(o.z) - .6, 1.2, 1.2); }
-    for (const b of boxes) { map.fillStyle = b.opened ? '#756b56' : b.tipo === 'pregunta' ? '#178b4f' : '#c3362e'; map.fillRect(mx(b.x) - 2.5, mx(b.z) - 2.5, 5, 5); }
+    for (const b of boxes) {
+      if (b.supervivenciaOculta) continue;
+
+      map.fillStyle = b.opened
+        ? '#756b56'
+        : b.tipo === 'pregunta'
+          ? '#178b4f'
+          : '#c3362e';
+
+      map.fillRect(
+        mx(b.x) - 2.5,
+        mx(b.z) - 2.5,
+        5,
+        5
+      );
+    }
     botiquines.dibujarEnMinimapa(map, mx);
     map.save(); map.translate(mx(player.x), mx(player.z)); map.rotate(-player.yaw); map.fillStyle = '#fff'; map.strokeStyle = '#26372f'; map.lineWidth = 1.5; map.beginPath(); map.moveTo(0, -7); map.lineTo(4, 5); map.lineTo(0, 3); map.lineTo(-4, 5); map.closePath(); map.fill(); map.stroke(); map.restore();
     $('coords').textContent = Math.round(player.x) + ' / ' + Math.round(player.z);
@@ -489,7 +551,7 @@ uniform mediump float distanceMax;
 
 
   // Modalidad local con enemigos: una sola simulación por escenario.
-  const flechas = new FlechasEscenario(gl, {cube, ground, obstacles, limite: half});
+  const flechas = new FlechasEscenario(gl, { cube, ground, obstacles, limite: half });
   const enemigos = new EnemigosSistema(gl, {
     config: ENEMIGOS_CONFIG, ground, obstacles, limite: half,
     player, cube, upload, draw, avisar: notify
@@ -524,7 +586,7 @@ uniform mediump float distanceMax;
       // Resolver primero el ataque local para que un enemigo eliminado no ataque.
       if (ataquePendiente) combate.ataqueDelJugador(ataquePendiente, vista);
       flechas.actualizar(dt);
-      if (!VidaJugador.estaMuerto()) enemigos.actualizar(dt, (a,b) => combate.visionLibre(a,b));
+      if (!VidaJugador.estaMuerto()) enemigos.actualizar(dt, (a, b) => combate.visionLibre(a, b));
     }
     ataquePendiente = null;
 
@@ -574,7 +636,9 @@ uniform mediump float distanceMax;
 
     const visibleDistance = quality.distance * (1 - storm) + 28 * storm;
     for (const c of chunks.values()) if (Math.hypot(c.x - player.x, c.z - player.z) < visibleDistance + 24) { draw(c); if (qualityName !== 'low') draw(c.detailMesh); }
-    for (const b of boxes) if (Math.hypot(b.x - player.x, b.z - player.z) < visibleDistance + 3) draw(b.opened ? b.openMesh : b);
+    for (const b of boxes)
+      if (Math.hypot(b.x - player.x, b.z - player.z) < visibleDistance + 3)
+        draw(b.opened ? b.openMesh : b);
     botiquines.dibujar(draw, player, visibleDistance);
     // Dibujar el personaje dentro del mundo.
     // La tormenta se dibuja después para cubrirlo también.

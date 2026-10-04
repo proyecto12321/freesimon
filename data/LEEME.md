@@ -1,44 +1,69 @@
-# Corrección del arco y apuntado contra NPC
+# Castillo e Hielo — integración corregida
 
-Basada en FreeSIMON_enemigos_automaticos, la última versión entregada en esta conversación.
+## Instalación
 
-## Instalar
-1. Guarda una copia de tus cuatro archivos actuales.
-2. Copia en data los cuatro JS completos de este paquete, reemplazando sus versiones:
-   - personajeD_completo.js
-   - proyectiles_arco.js
-   - combate.js
-   - escenario.js
-3. Conserva enemigos.js, enemigos.config.js, personaje.js, vida, botiquines, temporizador y todos los demás archivos existentes.
-4. En escenario.html actualiza las etiquetas correspondientes. No las dupliques:
+Copia estos OCHO archivos directamente en `C:\xampp\htdocs\freesimon\data`, reemplazando las versiones anteriores del castillo y del hielo:
 
-```html
-<!-- Conserva antes los scripts existentes de configuración, catálogo,
-     vida, botiquines del mapa y temporizador. -->
-<script src="personajeD_completo.js?v=arco-fix-2"></script>
-<script src="enemigos.config.js?v=npc-1"></script>
-<script src="proyectiles_arco.js?v=arco-fix-2"></script>
-<script src="enemigos.js?v=npc-1"></script>
-<script src="combate.js?v=arco-fix-2"></script>
-<script src="escenario.js?v=arco-fix-2"></script>
+- castillo.html
+- castillo.js
+- castillo.css
+- castillo.config.js
+- hielo.html
+- hielo.js
+- hielo.css
+- hielo.config.js
+
+No copies los archivos de esta entrega a las carpetas html, js o css: estos escenarios mantienen sus cuatro archivos juntos en data, como tu desierto.
+
+Los HTML ya contienen las rutas y el orden de scripts de TU escenario.html. Ya no debes copiar ni reconstruir manualmente el bloque de scripts. Conserva los módulos compartidos existentes de tu proyecto; no se incluyen versiones antiguas para reemplazarlos.
+
+Después de copiar, recarga con Ctrl+F5. Entra desde el panel docente y la sala con las preguntas cargadas, igual que en el desierto.
+
+## Correcciones de esta entrega
+
+- HTML construido sobre el modelo que enviaste, con el DOM completo del temporizador.
+- Vida: `vida_jugador_completo.js`.
+- Botiquines: `botiquin_jugador.js`.
+- Temporizador: `../js/temporizador_juego.js` y `../css/temporizador_juego.css`.
+- Supervivencia: `../js/supervivencia_runtime.js`.
+- Orden y versiones de personajes, proyectiles, combate y enemigos iguales a tu HTML.
+- Recuperación de corazones compatible con `recuperarCorazon` y `recuperarCorazones`, como tu escenario.js.
+- `Supervivencia.alCerrarPregunta()` solo se consulta cuando el modo está activo.
+- Preguntas con `texto`, cuatro `alternativas` y `correcta` entre 0 y 3, leídas de `juegoPreguntas`.
+- Cofres de armas con `botiquines: 2` y `escudos: 2`, siguiendo desierto.config.js.
+- Selector de clima conectado y tecla T funcional: automático / despejado / evento activo.
+- Cámara alineada con el modelo, con colisiones contra paredes, plataformas y techos.
+
+## Controles y clima
+
+WASD: caminar. Ratón o flechas: mirar. Shift: correr. Espacio: saltar. E: cofre. Q: guardar/sacar arma. F o clic: usar. H: botiquín. G: escudo. V: punto seguro. T: alternar clima. Esc: pausa.
+
+Castillo: interior con biblioteca, cripta, celdas y trono; apagones periódicos con iluminación tenue. Hielo: lago congelado, iglús, muñecos de nieve y nevadas periódicas.
+
+En cada config puedes ajustar `clima.primerEvento`, `intervalo` y `duracion` (segundos activos), o cambiar `modo` entre `auto`, `clear` y `storm`. En castillo `storm` significa apagón; en hielo, nevada. `luzMinima` controla la luz del apagón. `activo: false` desactiva el efecto, incluso en modo manual.
+
+## Selector de mapas
+
+Si ya agregaste los dos mapas al panel, no repitas este paso.
+
+En el arreglo de escenarios de panel_configuracion.js:
+
+```js
+{ id: 'castillo', nombre: 'Castillo de las Sombras', imagen: '../img/castillo.png' },
+{ id: 'hielo', nombre: 'Reino de Hielo', imagen: '../img/hielo.png' }
 ```
 
-5. Recarga con Ctrl+F5 y comienza una nueva partida.
+En el objeto de rutas que YA usa el botón Comenzar juego de panel_sala.js:
 
-## Qué se corrige
-- Cámara inicial horizontal; elimina el descuento oculto de 0,22 radianes que dirigía la mira al suelo próximo.
-- Los límites verticales de entrada y cámara coinciden; no se acumula un exceso invisible de movimiento.
-- El disparo del jugador ya no asigna instantáneamente personaje.giro. Con arma en mano el cuerpo sigue suavemente la orientación de la mira; desplazarse de lado no fuerza la dirección del siguiente tiro.
-- La flecha compensa la gravedad con una trayectoria de arco bajo para alcanzar el punto de la mira cuando es físicamente alcanzable. No es un proyectil teledirigido: enemigos móviles pueden esquivarla.
-- Cuando la mira toca el cuerpo de un NPC, el destino se coloca dentro de su volumen para evitar fallos en el borde por redondeo.
-- Flecha más visible y sin flecha decorativa sobre el arco durante la animación de disparo.
+```js
+castillo: '../data/castillo.html',
+hielo: '../data/hielo.html'
+```
 
-## Prueba
-Recoge el arco y apunta al CUERPO de un enemigo, no a la marca roja situada por encima de su cabeza. Pulsa F o clic izquierdo con el ratón capturado. Prueba primero con el enemigo a unos 8–20 metros/unidades, con visión libre. Repite girando a izquierda, derecha y detrás de la dirección inicial. El disparo debe conservar la orientación de la vista y la flecha debe viajar antes de impactar.
+Conserva las demás entradas y validaciones. Las imágenes son las entregadas por separado; este ZIP contiene solo código e instrucciones.
 
-Las paredes y el terreno siguen bloqueando el disparo: no se ha eliminado la colisión. Para un enemigo en movimiento debes anticipar su desplazamiento. El escudo, las preguntas, los NPC y su reaparición conservan sus reglas.
+## Verificación
 
-## Verificación y límites
-Sintaxis de los cuatro archivos; 288 disparos simulados con los 12 modelos del catálogo, ocho orientaciones y tres distancias (8, 20 y 35), usando cámara, origen del arco, trayectoria y colisión del combate. Se comprobó que el disparo no cambia yaw/pitch ni asigna el giro del personaje, y que el límite vertical responde inmediatamente al invertir el movimiento.
+Se verificaron sintaxis, elementos HTML requeridos, coincidencia exacta de los scripts compartidos con el modelo, apertura/respuesta/cierre de preguntas, compatibilidad de curación, cámara, acceso a cofres y ciclos manuales/automáticos del clima.
 
-Pendiente comprobar visualmente en el navegador del proyecto completo y medir rendimiento en la laptop. Esta entrega continúa siendo local, sin sincronización LAN.
+La verificación de lógica usa las interfaces de los módulos compartidos; los archivos actuales completos de vida, botiquines, temporizador y supervivencia no se adjuntaron. Por eso no equivale a una prueba de tu proyecto completo en navegador ni a una medición en tu laptop. Los módulos compartidos se conservan tal como funcionan en tu desierto.

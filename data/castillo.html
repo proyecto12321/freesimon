@@ -1,0 +1,366 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Castillo de las Sombras · FreeSIMON</title>
+
+    <link rel="stylesheet" href="castillo.css?v=integracion-2">
+    <link rel="stylesheet" href="../css/temporizador_juego.css">
+
+</head>
+
+<body>
+
+    <!-- =========================================================
+     ESCENARIO 3D
+     ========================================================= -->
+
+    <canvas id="mundo" aria-label="Castillo de las Sombras en tercera persona">
+    </canvas>
+
+
+    <!-- =========================================================
+     CABECERA
+     ========================================================= -->
+
+    <header>
+
+        <div class="brand">
+            <span class="symbol">◈</span>
+
+            <div>
+                <small>FREESIMON / CASTILLO</small>
+                <h1>Castillo de las Sombras</h1>
+            </div>
+        </div>
+
+        <div class="topright">
+            <span class="tag">PRUEBA LOCAL · 1 JUGADOR</span>
+
+            <button id="menuBtn">
+                Pausa / ajustes
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+     MINIMAPA
+     ========================================================= -->
+
+    <aside id="mapPanel">
+
+        <canvas id="mapa" width="160" height="160" aria-label="Minimapa">
+        </canvas>
+
+        <div class="mapcaption">
+            N ↑
+            <span id="coords">0 / 0</span>
+        </div>
+
+        <small>
+            <b class="green">■</b> Preguntas
+            <b class="red">■</b> Equipamiento
+            <b style="color:#fff;text-shadow:0 0 2px #243746">●</b> Botiquín
+        </small>
+
+    </aside>
+
+
+    <!-- =========================================================
+     CLIMA
+     ========================================================= -->
+
+    <div id="weatherBadge">
+
+        <span id="weatherIcon">☀</span>
+
+        <div>
+            <strong id="weatherName">
+                Antorchas encendidas
+            </strong>
+
+            <small id="weatherHelp">
+                T · cambiar clima
+            </small>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+     CONTROLES DE JUEGO
+     ========================================================= -->
+
+    <div id="crosshair">
+        +
+    </div>
+
+    <div id="hint" hidden></div>
+
+    <div id="toast" role="status" hidden>
+    </div>
+
+    <div id="temporizadorJuego" role="timer" aria-label="Tiempo restante" hidden>
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="tiempo-circulo-fondo" cx="50" cy="50" r="46"></circle>
+            <circle id="progresoTiempo" cx="50" cy="50" r="46"></circle>
+        </svg>
+        <span class="tiempo-etiqueta">TIEMPO</span>
+        <strong id="textoTiempo">30:00</strong>
+    </div>
+
+
+    <!-- =========================================================
+     PIE / ESTADÍSTICAS
+     ========================================================= -->
+
+    <footer>
+
+        <div class="stats">
+
+            <span>
+                EXPLORADOR
+                <strong id="score">
+                    0 puntos
+                </strong>
+            </span>
+
+            <span>
+                MOCHILA
+                <strong id="inventory">
+                    Vacía
+                </strong>
+            </span>
+
+        </div>
+
+        <div class="performance">
+
+            <span id="objective">
+                Preguntas del docente
+            </span>
+
+            <span id="fps">
+                — FPS
+            </span>
+
+            <span id="qualityLabel">
+                Calidad baja
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+     PANTALLA INICIAL / PAUSA
+     ========================================================= -->
+
+    <div id="overlay" class="overlay">
+
+        <section class="card">
+
+            <span class="eyebrow">
+                CASTILLO / EXPLORACIÓN
+            </span>
+
+            <h2>
+                Entre sombras<br>y secretos.
+            </h2>
+
+            <p>
+                Explora la biblioteca, la cripta y las galerías del castillo.
+                Encuentra los cofres y sigue la alfombra durante los apagones.
+            </p>
+
+
+            <!-- Controles -->
+
+            <div class="controls">
+
+                <span>
+                    <kbd>W A S D</kbd>
+                    Caminar
+                </span>
+
+                <span>
+                    <kbd>Ratón</kbd>
+                    Mirar
+                </span>
+
+                <span>
+                    <kbd>E</kbd>
+                    Abrir caja
+                </span>
+
+                <span>
+                    <kbd>Shift</kbd>
+                    Correr
+                </span>
+
+                <span>
+                    <kbd>Espacio</kbd>
+                    Saltar
+                </span>
+
+                <span>
+                    <kbd>Esc</kbd>
+                    Pausa
+                </span>
+
+                <span>
+                    <kbd>T</kbd>
+                    Cambiar clima
+                </span>
+
+                <span>
+                    <kbd>V</kbd>
+                    Volver al punto seguro
+                </span>
+
+            </div>
+
+
+            <!-- Calidad gráfica -->
+
+            <label class="quality">
+
+                Calidad gráfica
+
+                <select id="quality">
+
+                    <option value="low">
+                        Baja · empezar aquí
+                    </option>
+
+                    <option value="medium">
+                        Media
+                    </option>
+
+                    <option value="high">
+                        Alta
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <!-- Clima -->
+
+            <label class="quality">
+
+                Clima
+
+                <select id="weather">
+
+                    <option value="auto">
+                        Automático · ciclo de apagones
+                    </option>
+
+                    <option value="clear">
+                        Antorchas encendidas
+                    </option>
+
+                    <option value="storm">
+                        Apagón
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <!-- Iniciar -->
+
+            <button id="play" class="primary">
+
+                Explorar castillo
+                <span>→</span>
+
+            </button>
+
+
+            <!-- Regresar -->
+
+            <button id="returnRooms" class="return-rooms">
+
+                Volver
+
+            </button>
+
+
+            <!-- Nota -->
+
+            <p class="note">
+                Sin internet. Si el ratón no se captura, arrastra sobre
+                el escenario para mirar o usa las flechas. Q: sacar/guardar arma · F o clic: usar · H: botiquín · G: escudo.
+            </p>
+
+
+            <!-- Errores -->
+
+            <div id="error" role="alert" hidden>
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================================================
+     VENTANA DE PREGUNTA
+     ========================================================= -->
+
+    <dialog id="quiz">
+
+        <span class="eyebrow green">
+            CAJA VERDE / PREGUNTA
+        </span>
+
+        <h2 id="question"></h2>
+
+        <p id="shield">
+            Escudo activo · sin movimiento mientras respondes
+        </p>
+
+        <div id="answers"></div>
+
+        <p id="feedback" role="status">
+        </p>
+
+        <button id="closeQuiz">
+            Volver al castillo
+        </button>
+
+    </dialog>
+
+
+    <!-- =========================================================
+     SCRIPTS
+     ========================================================= -->
+
+    <!-- Configuración del escenario -->
+    
+    <script src="castillo.config.js?v=integracion-2"></script>
+    <script src="personaje.js?v=personaje-3d-fix3"></script>
+    <script src="proyectiles_arco.js?v=aim-from-weapon-1"></script>
+    <script src="vida_jugador_completo.js?v=1"></script>
+    <script src="enemigos.js?v=npc-2"></script>
+    <script src="combate.js?v=body-aim-1"></script>
+    <script src="personajeD_completo.js?v=orientation-fix-2"></script>
+    <script src="enemigos.config.js?v=npc-1"></script>
+    <script src="botiquin_jugador.js?v=botiquines-v1"></script>
+    <script src="../js/temporizador_juego.js?v=temporizador-v1"></script>
+    <script src="../js/supervivencia_runtime.js?v=supervivencia-v1"></script>
+    <script src="castillo.js?v=integracion-2"></script>
+</body>
+
+</html>

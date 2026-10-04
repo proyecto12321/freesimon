@@ -6,7 +6,9 @@
         cielo: "../data/cielo.html",
         inframundo: "../data/inframundo.html",
         ciudad: "../data/ciudad.html",
-        bosque: "../data/bosque.html"
+        bosque: "../data/bosque.html",
+        hielo: "../data/hielo.html",
+        castillo: "../data/castillo.html"
     };
     const nombres = {
         desierto: "Desierto",
@@ -14,7 +16,9 @@
         cielo: "Cielo",
         inframundo: "Inframundo",
         ciudad: "Ciudad",
-        bosque: "Bosque"
+        bosque: "Bosque",
+        hielo: "hielo",
+        castillo: "castillo"
     };
 
     try {

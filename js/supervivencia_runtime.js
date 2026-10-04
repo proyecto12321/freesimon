@@ -68,6 +68,31 @@
                 return true;
             }
 
+            // Reparto continuo entre escenarios: los motores vuelven a asignar
+            // 0, 1, 2... al cargar, por eso aquí corregimos caja.pregunta.
+            // correctas ya persiste durante toda la partida. Restamos las de
+            // este mapa para reconstruir su lote incluso después de recargar.
+            let preguntas;
+            try {
+                preguntas = JSON.parse(sessionStorage.getItem("juegoPreguntas") || "null");
+            } catch {
+                throw new Error("No se pudieron leer las preguntas de la partida. Vuelve a cargar el juego desde el panel docente.");
+            }
+            if (!Array.isArray(preguntas) || preguntas.length === 0) {
+                throw new Error("No hay preguntas cargadas para Supervivencia. Carga el juego desde el panel docente.");
+            }
+            const respondidasAntesDelMapa = estado.correctas - estado.cajasCompletadas;
+            if (respondidasAntesDelMapa < 0) {
+                throw new Error("El avance de preguntas no es válido. Inicia una partida nueva desde la sala.");
+            }
+            cajasPregunta.forEach((caja, indice) => {
+                if (indice < 5) {
+                    // El módulo permite repetir solo al agotar TODA la lista.
+                    // Ejemplo con 12 preguntas: 1–5, 6–10, 11–12–1–2–3.
+                    caja.pregunta = (respondidasAntesDelMapa + indice) % preguntas.length;
+                }
+            });
+
             const indiceActual = Math.min(estado.cajasCompletadas, 4);
             cajasPregunta.forEach((caja, indice) => {
                 caja.supervivenciaOculta = indice !== indiceActual;
@@ -80,6 +105,10 @@
             if (!esSupervivencia()) return;
 
             const estado = leerEstado();
+            // Un callback repetido no debe contar dos veces ni saltar preguntas.
+            if (estado.cajasCompletadas >= 5
+                || caja !== cajasPregunta[estado.cajasCompletadas]
+                || caja.supervivenciaOculta) return;
             if (correcta) {
                 estado.correctas += 1;
                 estado.cajasCompletadas += 1;
