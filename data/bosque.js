@@ -397,7 +397,11 @@
       questionBox = b; solved = false; returnAt = 0; player.protected = true; active = false; release(); deadline = performance.now() + config.tiempoPregunta * 1000;
       $('question').textContent = q.texto; $('answers').replaceChildren(); $('feedback').textContent = ''; $('hint').hidden = true;
       q.opciones.forEach((option, i) => { const btn = document.createElement('button'); btn.textContent = String.fromCharCode(65 + i) + '. ' + option; btn.onclick = () => answer(i); $('answers').append(btn); });
-      $('quiz').showModal(); emit('escenario:proteccion', { activa: true, id: b.id });
+      $('quiz').showModal();
+
+      // Reproducir al abrir la pregunta de la caja verde.
+      window.SonidosJuego?.reproducir("caja");
+      emit('escenario:proteccion', { activa: true, id: b.id });
    }
    function answer(index) {
       if (solved || !questionBox) return; solved = true; returnAt = performance.now() + 3000; const q = config.preguntas[questionBox.pregunta], correct = index === q.correcta; if (!modoSupervivencia || correct) questionBox.opened = true; if (modoSupervivencia) Supervivencia.registrarRespuesta(questionBox, correct);

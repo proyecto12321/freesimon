@@ -14,7 +14,7 @@
 
     Object.values(audios).forEach(audio => {
         audio.preload = "auto";
-        audio.volume = 0.40;
+        audio.volume = 0.50;
     });
 
     // ========================================

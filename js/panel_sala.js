@@ -285,3 +285,26 @@ btnSupervivencia.addEventListener("click", () => {
     window.location.href = "supervivencia_escenario.html";
 
 });
+
+// ========================================
+// SONIDO AL SELECCIONAR UN PERSONAJE
+// ========================================
+(() => {
+    // Ruta desde html/panel_sala.html hasta music/seleccion.mp3.
+    const sonidoSeleccion = new Audio("../music/seleccion.mp3");
+    sonidoSeleccion.preload = "auto";
+    sonidoSeleccion.volume = 1.0;
+
+    // Escuchar el evento que ya utiliza el selector de personajes.
+    document.addEventListener("personajeSeleccionado", () => {
+        try {
+            // Reiniciar el efecto cuando se selecciona otro personaje.
+            sonidoSeleccion.currentTime = 0;
+            sonidoSeleccion.play().catch(() => {
+                // Un fallo de audio no afecta la selección.
+            });
+        } catch {
+            // La selección continúa aunque el audio no esté disponible.
+        }
+    });
+})();
