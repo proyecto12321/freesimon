@@ -293,7 +293,7 @@ btnSupervivencia.addEventListener("click", () => {
     // Ruta desde html/panel_sala.html hasta music/seleccion.mp3.
     const sonidoSeleccion = new Audio("../music/seleccion.mp3");
     sonidoSeleccion.preload = "auto";
-    sonidoSeleccion.volume = 1.0;
+    sonidoSeleccion.volume = 0.9;
 
     // Escuchar el evento que ya utiliza el selector de personajes.
     document.addEventListener("personajeSeleccionado", () => {
