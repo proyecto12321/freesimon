@@ -82,6 +82,36 @@
     <script src="../js/temporizador_juego.js?v=temporizador-v1"></script>
     <script src="../js/supervivencia_runtime.js?v=supervivencia-v1"></script>
     <script src="mar.js?v=equipo-combate-1"></script>
+
+    <!-- Música del escenario: se repite hasta salir de esta página -->
+    <audio id="musicaFondo" loop preload="none">
+        <source src="../music/mar.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        (() => {
+            const musica = document.getElementById("musicaFondo");
+            musica.volume = 0.55; // Volumen del 0 al 1.
+
+            // El navegador puede bloquear la música automática.
+            // Se inicia con el primer clic o una tecla.
+            async function iniciarMusica() {
+                try {
+                    await musica.play();
+
+                    // Una vez iniciada, dejamos de escuchar estos eventos.
+                    document.removeEventListener("click", iniciarMusica);
+                    document.removeEventListener("keydown", iniciarMusica);
+                } catch {
+                    // Si no pudo reproducirse, se intentará en otra interacción.
+                }
+            }
+
+            document.addEventListener("click", iniciarMusica);
+            document.addEventListener("keydown", iniciarMusica);
+        })();
+    </script>
+
 </body>
 
 </html>
