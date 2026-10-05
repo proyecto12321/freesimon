@@ -13,7 +13,9 @@
         cielo: "../data/cielo.html",
         inframundo: "../data/inframundo.html",
         ciudad: "../data/ciudad.html",
-        bosque: "../data/bosque.html"
+        bosque: "../data/bosque.html",
+        hielo: "../data/hielo.html",
+        castillo: "../data/castillo.html"
     };
     const mapa = estado.escenarios[estado.indiceEscenario];
     const nombre = estado.nombres?.[mapa] || mapa;

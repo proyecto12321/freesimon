@@ -372,7 +372,7 @@
    addEventListener('blur', () => { keys.clear(); if (active) pause(); });
    document.addEventListener('visibilitychange', () => { if (document.hidden && active) pause(); });
    const movement = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'ShiftLeft', 'ShiftRight'];
-   addEventListener('keydown', e => { if (!active || $('quiz').open || player.protected || VidaJugador.estaMuerto()) return; if (movement.includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Escape') { pause(); } if (e.code === 'KeyE' && !e.repeat) interact(); if (equipoJugador.manejarTecla(e)) return; if (e.code === 'KeyR' && !e.repeat) equipoJugador.recibirDano(1); if (e.code === 'KeyV' && !e.repeat) respawn(false); if (e.code === 'Space' && !e.repeat && player.grounded) { player.vy = 7.5; player.grounded = false; } });
+   addEventListener('keydown', e => { if (!active || $('quiz').open || player.protected || VidaJugador.estaMuerto()) return; if (movement.includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Escape') { pause(); } if (e.code === 'KeyE' && !e.repeat) interact(); if (equipoJugador.manejarTecla(e)) return; if (e.code === 'KeyR' && !e.repeat) equipoJugador.recibirDano(1); if (e.code === 'KeyV' && !e.repeat) respawn(false); if (e.code === 'Space' && !e.repeat && player.grounded) { player.vy = 7.5; player.grounded = false; window.SonidosJuego?.reproducir("salto"); } });
    addEventListener('keyup', e => keys.delete(e.code));
    function allowed(x, z) {
       const floor = surfaceAt(x, z);

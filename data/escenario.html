@@ -364,7 +364,8 @@
     <script src="../js/temporizador_juego.js?v=temporizador-v1"></script>
     <script src="../js/supervivencia_runtime.js?v=supervivencia-v1"></script>
     <script src="escenario.js?v=local-combat-2"></script>
-
+    <!-- Efectos de salto y apertura de cajas -->
+    <script src="sonidos.js?v=1"></script>
     <!-- Música del escenario: se repite hasta salir de esta página -->
     <audio id="musicaFondo" loop preload="none">
         <source src="../music/desierto.mp3" type="audio/mpeg">
@@ -373,7 +374,7 @@
     <script>
         (() => {
             const musica = document.getElementById("musicaFondo");
-            musica.volume = 0.55; // Volumen del 0 al 1.
+            musica.volume = 0.35; // Volumen del 0 al 1.
 
             // El navegador puede bloquear la música automática.
             // Se inicia con el primer clic o una tecla.

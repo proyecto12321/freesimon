@@ -354,7 +354,16 @@ uniform mediump float distanceMax;
   addEventListener('blur', () => { keys.clear(); if (active) pause(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden && active) pause(); });
   const movement = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'ShiftLeft', 'ShiftRight'];
-  addEventListener('keydown', e => { if (!active || $('quiz').open) return; if (movement.includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Escape') { pause(); } if (e.code === 'KeyE' && !e.repeat) interact(); if (e.code === 'KeyT' && !e.repeat) setWeather(weatherMode === 'storm' ? 'clear' : weatherMode === 'clear' ? 'auto' : 'storm'); if (e.code === 'Space' && !e.repeat && player.jump === 0) player.vy = 5; });
+  addEventListener('keydown', e => { if (!active || $('quiz').open) return; if (movement.includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Escape') { pause(); } if (e.code === 'KeyE' && !e.repeat) interact(); if (e.code === 'KeyT' && !e.repeat) setWeather(weatherMode === 'storm' ? 'clear' : weatherMode === 'clear' ? 'auto' : 'storm'); // Iniciar el salto y reproducir el sonido una sola vez.
+if (
+    e.code === 'Space' &&
+    !e.repeat &&
+    player.jump === 0 &&
+    player.vy === 0
+) {
+    player.vy = 5;
+    window.SonidosJuego?.reproducir("salto");
+} });
   addEventListener('keyup', e => keys.delete(e.code));
   function allowed(x, z) { if (Math.abs(x) > half - 7 || Math.abs(z) > half - 7) return false; return !obstacles.some(o => Math.hypot(x - o.x, z - o.z) < o.r + .25); }
   function emit(name, detail) { window.dispatchEvent(new CustomEvent(name, { detail })); }
@@ -393,6 +402,8 @@ uniform mediump float distanceMax;
     });
 
     $('quiz').showModal();
+    // Sonar al abrir la pregunta de una caja verde.
+window.SonidosJuego?.reproducir("caja");
     emit('escenario:proteccion', { activa: true, id: caja.id });
   }
   function answer(indiceSeleccionado) {

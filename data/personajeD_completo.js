@@ -384,17 +384,17 @@
         // Punto de salida en la flecha del arco, transformado como el equipo.
         obtenerOrigenFlecha() {
             if (!this.posicion) return null;
-            const estado=this.equipo?.getState?.() || {};
-            const a=this.anguloEquipo(estado), ca=Math.cos(a), sa=Math.sin(a);
-            const ajuste=-1.25, cy=Math.cos(ajuste), sy=Math.sin(ajuste);
+            const estado = this.equipo?.getState?.() || {};
+            const a = this.anguloEquipo(estado), ca = Math.cos(a), sa = Math.sin(a);
+            const ajuste = -1.25, cy = Math.cos(ajuste), sy = Math.sin(ajuste);
             // Punta del modelo de flecha colocado sobre el arco.
-            const ly=1*cy-(-68)*sy, lz=1*sy+(-68)*cy;
-            const x=this.mano.x*this.escala;
-            const dy=this.mano.y+ly-this.mano.pivote, dz=this.mano.z+lz;
-            const y=(this.mano.pivote+dy*ca-dz*sa)*this.escala;
-            const z=(dy*sa+dz*ca)*this.escala;
-            const c=Math.cos(this.giro), s=Math.sin(this.giro);
-            return {x:this.posicion.x+c*x+s*z,y:this.posicion.y+y,z:this.posicion.z-s*x+c*z};
+            const ly = 1 * cy - (-68) * sy, lz = 1 * sy + (-68) * cy;
+            const x = this.mano.x * this.escala;
+            const dy = this.mano.y + ly - this.mano.pivote, dz = this.mano.z + lz;
+            const y = (this.mano.pivote + dy * ca - dz * sa) * this.escala;
+            const z = (dy * sa + dz * ca) * this.escala;
+            const c = Math.cos(this.giro), s = Math.sin(this.giro);
+            return { x: this.posicion.x + c * x + s * z, y: this.posicion.y + y, z: this.posicion.z - s * x + c * z };
         }
 
         // La mano y el objeto comparten el mismo pivote y ángulo del brazo.
@@ -414,16 +414,16 @@
                 const y0 = y - h / 2, y1 = y + h / 2;
                 const z0 = z - d / 2, z1 = z + d / 2;
                 const caras = [
-                    [[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0]],
-                    [[x1,y0,z1],[x0,y0,z1],[x0,y1,z1],[x1,y1,z1]],
-                    [[x1,y0,z0],[x1,y0,z1],[x1,y1,z1],[x1,y1,z0]],
-                    [[x0,y0,z1],[x0,y0,z0],[x0,y1,z0],[x0,y1,z1]],
-                    [[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]],
-                    [[x0,y0,z1],[x1,y0,z1],[x1,y0,z0],[x0,y0,z0]]
+                    [[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0]],
+                    [[x1, y0, z1], [x0, y0, z1], [x0, y1, z1], [x1, y1, z1]],
+                    [[x1, y0, z0], [x1, y0, z1], [x1, y1, z1], [x1, y1, z0]],
+                    [[x0, y0, z1], [x0, y0, z0], [x0, y1, z0], [x0, y1, z1]],
+                    [[x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]],
+                    [[x0, y0, z1], [x1, y0, z1], [x1, y0, z0], [x0, y0, z0]]
                 ];
                 caras.forEach((cara, i) => {
                     const luz = [0.95, 0.7, 0.85, 0.75, 1, 0.6][i];
-                    for (const j of [0,1,2,0,2,3]) vertices.push(...cara[j], ...rgb.map(c => c * luz));
+                    for (const j of [0, 1, 2, 0, 2, 3]) vertices.push(...cara[j], ...rgb.map(c => c * luz));
                 });
             };
             if (nombre === "Escudo") {
@@ -529,9 +529,9 @@
                 const x = (mano.x + v[i]) * this.escala;
                 const y = (mano.y + v[i + 1]) * this.escala;
                 const z = (mano.z + v[i + 2]) * this.escala;
-                this.datosEscudo[i] = this.posicion.x + c*x + s*z;
+                this.datosEscudo[i] = this.posicion.x + c * x + s * z;
                 this.datosEscudo[i + 1] = this.posicion.y + y;
-                this.datosEscudo[i + 2] = this.posicion.z - s*x + c*z;
+                this.datosEscudo[i + 2] = this.posicion.z - s * x + c * z;
                 this.datosEscudo[i + 3] = v[i + 3];
                 this.datosEscudo[i + 4] = v[i + 4];
                 this.datosEscudo[i + 5] = v[i + 5];
@@ -606,7 +606,7 @@
 
     // Inventario, vida y acciones compartidos por los seis mapas, sin duplicar reglas.
     class EquipoJugador {
-        constructor({ inventario = [], avisar = () => {}, puedeUsar = () => false,
+        constructor({ inventario = [], avisar = () => { }, puedeUsar = () => false,
             puedeRecibirDano = puedeUsar } = {}) {
             if (window.VidaJugador?.versionEquipo !== 2) {
                 throw new Error("Carga vida_jugador.js versión 2 antes de crear EquipoJugador.");
@@ -735,6 +735,8 @@
                 return false;
             }
             caja.opened = true;
+            // La caja ya fue validada: reproducir su apertura.
+            window.SonidosJuego?.reproducir("caja");
             this.cajasRecogidas.add(caja.id ?? caja);
             this.inventario.push(caja.objeto);
             const botiquines = Number.isInteger(caja.botiquines) && caja.botiquines > 0 ? caja.botiquines : 0;
